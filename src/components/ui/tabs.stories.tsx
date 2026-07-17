@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect } from 'storybook/test'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -29,6 +30,17 @@ export const Default: Story = {
       </TabsContent>
     </Tabs>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const accountTab = canvas.getByRole('tab', { name: /account/i })
+    const passwordTab = canvas.getByRole('tab', { name: /password/i })
+    await expect(accountTab).toHaveAttribute('aria-selected', 'true')
+    await expect(passwordTab).toHaveAttribute('aria-selected', 'false')
+    await userEvent.click(passwordTab)
+    await expect(passwordTab).toHaveAttribute('aria-selected', 'true')
+    await expect(
+      canvas.getByText('Change your password here.')
+    ).toBeVisible()
+  },
 }
 
 export const LineVariant: Story = {

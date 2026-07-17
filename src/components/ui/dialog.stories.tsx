@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, waitFor, within } from 'storybook/test'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -52,4 +53,23 @@ export const Default: Story = {
       </DialogContent>
     </Dialog>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const trigger = canvas.getByRole('button', { name: /edit profile/i })
+    await userEvent.click(trigger)
+
+    // DialogContent renders through a portal into document.body, so it
+    // won't be found inside `canvas` — query the portal root instead.
+    const body = within(trigger.ownerDocument.body)
+    const dialog = await body.findByRole('dialog')
+    await waitFor(() =>
+      expect(within(dialog).getByText('Edit profile')).toBeVisible()
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /cancel/i }))
+    // Closing animates out (duration-100), so the node lingers briefly
+    // with data-closed before being unmounted.
+    await waitFor(() =>
+      expect(body.queryByRole('dialog')).not.toBeInTheDocument()
+    )
+  },
 }

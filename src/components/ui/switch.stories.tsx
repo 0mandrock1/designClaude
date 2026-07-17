@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect } from 'storybook/test'
 
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
@@ -18,6 +19,12 @@ export const Default: Story = {
       <Label htmlFor="switch-airplane">Airplane Mode</Label>
     </div>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const toggle = canvas.getByRole('switch', { name: /airplane mode/i })
+    await expect(toggle).toHaveAttribute('aria-checked', 'false')
+    await userEvent.click(toggle)
+    await expect(toggle).toHaveAttribute('aria-checked', 'true')
+  },
 }
 
 export const Small: Story = {

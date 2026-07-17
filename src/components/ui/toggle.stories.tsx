@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BoldIcon } from 'lucide-react'
+import { expect } from 'storybook/test'
 
 import { Toggle } from '@/components/ui/toggle'
 
@@ -17,6 +18,12 @@ export const Default: Story = {
       <BoldIcon />
     </Toggle>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const toggle = canvas.getByRole('button', { name: /toggle bold/i })
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    await userEvent.click(toggle)
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  },
 }
 
 export const Outline: Story = {

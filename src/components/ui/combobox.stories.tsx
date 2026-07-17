@@ -17,7 +17,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const frameworks = [
+type Framework = { value: string; label: string }
+
+const frameworks: Framework[] = [
   { value: 'next.js', label: 'Next.js' },
   { value: 'sveltekit', label: 'SvelteKit' },
   { value: 'nuxt.js', label: 'Nuxt.js' },
@@ -27,7 +29,10 @@ const frameworks = [
 
 export const Default: Story = {
   render: () => (
-    <Combobox items={frameworks} itemToStringLabel={(item) => item.label}>
+    <Combobox
+      items={frameworks}
+      itemToStringLabel={(item: Framework) => item.label}
+    >
       <ComboboxInput placeholder="Select framework..." />
       <ComboboxContent>
         <ComboboxEmpty>No framework found.</ComboboxEmpty>

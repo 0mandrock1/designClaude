@@ -10,6 +10,13 @@ import {
 const meta = {
   title: 'Components/InputOTP',
   component: InputOTP,
+  args: {
+    // Satisfies the required `maxLength` prop, and one branch of the
+    // `render`/`children` union, from `input-otp` at the Meta level so
+    // individual stories don't need to redeclare `args`.
+    maxLength: 6,
+    children: null,
+  },
 } satisfies Meta<typeof InputOTP>
 
 export default meta

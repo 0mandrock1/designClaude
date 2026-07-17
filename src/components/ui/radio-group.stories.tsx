@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect } from 'storybook/test'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -28,6 +29,15 @@ export const Default: Story = {
       </div>
     </RadioGroup>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const comfortable = canvas.getByRole('radio', { name: /comfortable/i })
+    const compact = canvas.getByRole('radio', { name: /compact/i })
+    await expect(comfortable).toHaveAttribute('aria-checked', 'true')
+    await expect(compact).toHaveAttribute('aria-checked', 'false')
+    await userEvent.click(compact)
+    await expect(compact).toHaveAttribute('aria-checked', 'true')
+    await expect(comfortable).toHaveAttribute('aria-checked', 'false')
+  },
 }
 
 export const Disabled: Story = {

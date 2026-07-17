@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect } from 'storybook/test'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
@@ -18,6 +19,14 @@ export const Default: Story = {
       <Label htmlFor="terms">Accept terms and conditions</Label>
     </div>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const checkbox = canvas.getByRole('checkbox', {
+      name: /accept terms and conditions/i,
+    })
+    await expect(checkbox).toHaveAttribute('aria-checked', 'false')
+    await userEvent.click(checkbox)
+    await expect(checkbox).toHaveAttribute('aria-checked', 'true')
+  },
 }
 
 export const States: Story = {

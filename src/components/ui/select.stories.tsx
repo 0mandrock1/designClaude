@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect, within } from 'storybook/test'
 
 import {
   Select,
@@ -41,6 +42,19 @@ export const Default: Story = {
       </SelectContent>
     </Select>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const trigger = canvas.getByRole('combobox')
+    await expect(trigger).toHaveTextContent(/apple/i)
+
+    await userEvent.click(trigger)
+
+    // SelectContent renders through a portal into document.body.
+    const body = within(trigger.ownerDocument.body)
+    const banana = await body.findByRole('option', { name: 'Banana' })
+    await userEvent.click(banana)
+
+    await expect(trigger).toHaveTextContent(/banana/i)
+  },
 }
 
 export const Small: Story = {

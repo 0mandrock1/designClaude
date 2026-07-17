@@ -35,6 +35,10 @@ const meta = {
   component: ChartContainer,
   args: {
     config: chartConfig,
+    // Satisfies ChartContainer's required `children` prop at the Meta
+    // level so individual stories don't need to redeclare `args` when
+    // they override the rendered chart via `render`.
+    children: <></>,
   },
 } satisfies Meta<typeof ChartContainer>
 

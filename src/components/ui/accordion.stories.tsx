@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { expect } from 'storybook/test'
 
 import {
   Accordion,
@@ -38,6 +39,14 @@ export const Default: Story = {
       </AccordionItem>
     </Accordion>
   ),
+  play: async ({ canvas, userEvent }) => {
+    const first = canvas.getByRole('button', { name: /is it accessible/i })
+    const second = canvas.getByRole('button', { name: /is it styled/i })
+    await expect(first).toHaveAttribute('aria-expanded', 'true')
+    await expect(second).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(second)
+    await expect(second).toHaveAttribute('aria-expanded', 'true')
+  },
 }
 
 export const Multiple: Story = {
