@@ -2,25 +2,32 @@
 
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress"
 
+import { Debris } from "@/components/debris/Debris"
 import { cn } from "@/lib/utils"
 
 function Progress({
   className,
   children,
   value,
+  debris = false,
   ...props
-}: ProgressPrimitive.Root.Props) {
+}: ProgressPrimitive.Root.Props & { debris?: boolean }) {
   return (
     <ProgressPrimitive.Root
       value={value}
       data-slot="progress"
-      className={cn("flex flex-wrap gap-3", className)}
+      className={cn(
+        "relative flex flex-wrap gap-3",
+        debris && "overflow-hidden",
+        className
+      )}
       {...props}
     >
       {children}
       <ProgressTrack>
         <ProgressIndicator />
       </ProgressTrack>
+      {debris && <Debris seed={value ?? "progress"} name="progress" />}
     </ProgressPrimitive.Root>
   )
 }
@@ -45,7 +52,10 @@ function ProgressIndicator({
   return (
     <ProgressPrimitive.Indicator
       data-slot="progress-indicator"
-      className={cn("h-full bg-primary transition-all", className)}
+      className={cn(
+        "h-full bg-primary transition-all data-complete:bg-ok",
+        className
+      )}
       {...props}
     />
   )

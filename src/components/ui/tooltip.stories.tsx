@@ -21,9 +21,9 @@ export const Default: Story = {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger render={<Button variant="outline" />}>
-          Hover me
+          Наведи курсор
         </TooltipTrigger>
-        <TooltipContent>Add to library</TooltipContent>
+        <TooltipContent>Додати в library</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   ),
@@ -34,22 +34,43 @@ export const Sides: Story = {
     <TooltipProvider>
       <div className="flex gap-4">
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline" />}>Top</TooltipTrigger>
-          <TooltipContent side="top">Tooltip on top</TooltipContent>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            Зверху
+          </TooltipTrigger>
+          <TooltipContent side="top">Tooltip зверху</TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline" />}>Right</TooltipTrigger>
-          <TooltipContent side="right">Tooltip on right</TooltipContent>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            Справа
+          </TooltipTrigger>
+          <TooltipContent side="right">Tooltip справа</TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline" />}>Bottom</TooltipTrigger>
-          <TooltipContent side="bottom">Tooltip on bottom</TooltipContent>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            Знизу
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Tooltip знизу</TooltipContent>
         </Tooltip>
         <Tooltip>
-          <TooltipTrigger render={<Button variant="outline" />}>Left</TooltipTrigger>
-          <TooltipContent side="left">Tooltip on left</TooltipContent>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            Зліва
+          </TooltipTrigger>
+          <TooltipContent side="left">Tooltip зліва</TooltipContent>
         </Tooltip>
       </div>
+    </TooltipProvider>
+  ),
+}
+
+export const WithDebris: Story = {
+  render: () => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger render={<Button variant="outline" />}>
+          Debris tooltip
+        </TooltipTrigger>
+        <TooltipContent debris>system: armed, 12ms</TooltipContent>
+      </Tooltip>
     </TooltipProvider>
   ),
 }

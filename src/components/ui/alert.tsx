@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 
+import { Debris } from "@/components/debris/Debris"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
@@ -11,6 +12,9 @@ const alertVariants = cva(
         default: "bg-card text-card-foreground",
         destructive:
           "bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
+        info: "bg-card text-info *:data-[slot=alert-description]:text-info/90 *:[svg]:text-current",
+        success:
+          "bg-card text-ok *:data-[slot=alert-description]:text-ok/90 *:[svg]:text-current",
       },
     },
     defaultVariants: {
@@ -22,15 +26,28 @@ const alertVariants = cva(
 function Alert({
   className,
   variant,
+  debris = false,
+  id,
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof alertVariants>) {
+}: React.ComponentProps<"div"> &
+  VariantProps<typeof alertVariants> & { debris?: boolean }) {
   return (
     <div
       data-slot="alert"
       role="alert"
-      className={cn(alertVariants({ variant }), className)}
+      id={id}
+      className={cn(
+        alertVariants({ variant }),
+        debris && "overflow-hidden",
+        className
+      )}
       {...props}
-    />
+    >
+      {props.children}
+      {debris && (
+        <Debris seed={id ?? variant ?? "default"} name="alert" count={3} />
+      )}
+    </div>
   )
 }
 

@@ -13,14 +13,14 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     type: 'email',
-    placeholder: 'Email',
+    placeholder: 'Пошта',
   },
   render: (args) => <Input className="w-72" {...args} />,
 }
 
 export const Disabled: Story = {
   args: {
-    placeholder: 'Disabled',
+    placeholder: 'Заблоковано',
     disabled: true,
   },
   render: (args) => <Input className="w-72" {...args} />,
@@ -28,8 +28,17 @@ export const Disabled: Story = {
 
 export const Invalid: Story = {
   args: {
-    placeholder: 'Invalid input',
+    placeholder: 'Невалідний ввід',
     'aria-invalid': true,
   },
   render: (args) => <Input className="w-72" {...args} />,
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <div className="w-72 p-8">
+      <Input debris id="deploy-target" placeholder="Ціль деплою" />
+    </div>
+  ),
 }

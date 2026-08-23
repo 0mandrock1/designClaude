@@ -5,46 +5,27 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * mandrock0: dark-only. The palette lives in :root so the first paint is
+ * already dark (no light-theme flash). .dark stays a no-op alias so any
+ * code that still toggles the class keeps working.
+ */
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  --radius-card: 0.25rem;
+  --radius-control: 1rem;
 
-.dark {
-  --accent-purple: oklch(62% .27 300);
-  --accent-cyan:   oklch(80% .15 205);
-  --accent-lime:   oklch(87% .22 132);
-  --accent-shader: var(--accent-purple);
+  --accent-purple:  oklch(62% .27 300);
+  --accent-cyan:    oklch(80% .15 205);
+  --accent-lime:    oklch(87% .22 132);
+  --accent-crimson: oklch(60% .23 13);
+  --accent-shader:  var(--accent-purple);
+
+  /* role layer, sits on top of shadcn semantics below */
+  --action: var(--accent-purple);
+  --info:   var(--accent-cyan);
+  --ok:     var(--accent-lime);
+  --alive:  var(--accent-crimson);
 
   --background: oklch(12.5% .085 356);
   --foreground: oklch(96% .03 352);
@@ -57,14 +38,21 @@
   --secondary:  oklch(24% .125 354);
   --secondary-foreground: var(--foreground);
   --muted:      oklch(21% .115 355);
-  --muted-foreground: oklch(60% .11 352);
+  --muted-foreground: oklch(68% .09 352);
   --accent:     var(--accent-shader);
   --accent-foreground: oklch(10% .04 356);
-  --destructive: oklch(64% .26 8);
+  --destructive: oklch(70% .18 38);
   --border:     oklch(30% .145 353 / .55);
   --input:      oklch(30% .145 353 / .7);
   --ring:       var(--accent-shader);
-  --glow:       var(--accent-shader);
+
+  /* one glow color, three strengths — never three colors */
+  --glow: var(--accent-shader);
+  --glow-ambient:     0 0 0 1px color-mix(in oklch, var(--glow) 14%, transparent);
+  --glow-attention:   0 0 0 1px color-mix(in oklch, var(--glow) 55%, transparent),
+                       0 0 20px color-mix(in oklch, var(--glow) 40%, transparent);
+  --glow-interaction: 0 0 0 1.5px color-mix(in oklch, var(--glow) 85%, transparent),
+                       0 0 28px color-mix(in oklch, var(--glow) 60%, transparent);
 
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -79,6 +67,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: var(--accent-shader);
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -116,17 +108,27 @@
   --color-accent-purple: var(--accent-purple);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-lime: var(--accent-lime);
+  --color-accent-crimson: var(--accent-crimson);
   --color-accent-shader: var(--accent-shader);
+  --color-action: var(--action);
+  --color-info: var(--info);
+  --color-ok: var(--ok);
+  --color-alive: var(--alive);
   --color-glow: var(--glow);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-glow-ambient: var(--glow-ambient);
+  --shadow-glow-attention: var(--glow-attention);
+  --shadow-glow-interaction: var(--glow-interaction);
 }
 
 @layer base {
@@ -138,5 +140,45 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* mandrock0: named glitch budget — one ceiling, referenced by core-20 decor.
+   Priority when several want to fire: system event > user interaction > idle random. */
+:root {
+  --glitch-budget: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --glitch-budget: 0;
+  }
+}
+
+/* mandrock0 chaos layer — content lives in ::before so it never reaches the
+   a11y tree, the copy buffer, or in-page search. */
+.debris-bit::before {
+  content: var(--debris-content);
+}
+
+@keyframes debris-pulse {
+  0%, 100% { opacity: .3; }
+  50% { opacity: .8; }
+}
+
+@keyframes debris-glitch {
+  0%, 100% { transform: translate(0, 0); opacity: .3; }
+  20% { transform: translate(calc(var(--glitch-budget) * 1px), 0); opacity: .7; }
+  40% { transform: translate(calc(var(--glitch-budget) * -1px), 0); opacity: .3; }
+  60% { transform: translate(0, calc(var(--glitch-budget) * 1px)); opacity: .6; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .debris-bit[data-alive="true"] {
+    animation: debris-pulse 2.4s ease-in-out infinite;
+  }
+  .debris-bit[data-glitch="true"]:hover,
+  .debris-bit[data-glitch="true"][data-alive="true"] {
+    animation: debris-glitch 240ms steps(2) 1;
   }
 }

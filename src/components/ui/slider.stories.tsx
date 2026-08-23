@@ -29,3 +29,10 @@ export const Vertical: Story = {
 export const Disabled: Story = {
   render: () => <Slider defaultValue={[50]} className="w-72" disabled />,
 }
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <Slider defaultValue={[40, 65]} className="w-72" id="crossfade" debris />
+  ),
+}

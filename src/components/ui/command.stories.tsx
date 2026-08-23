@@ -28,18 +28,18 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
-    <Command className="w-96 rounded-lg border shadow-md">
-      <CommandInput placeholder="Type a command or search..." />
+    <Command className="w-96">
+      <CommandInput placeholder="Введи команду або шукай..." />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
+        <CommandEmpty>Нічого не знайдено.</CommandEmpty>
+        <CommandGroup heading="Швидкі дії">
           <CommandItem>
             <CalendarIcon />
             <span>Calendar</span>
           </CommandItem>
           <CommandItem>
             <SmileIcon />
-            <span>Search Emoji</span>
+            <span>Пошук emoji</span>
           </CommandItem>
           <CommandItem>
             <CalculatorIcon />
@@ -47,7 +47,45 @@ export const Default: Story = {
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Settings">
+        <CommandGroup heading="Налаштування">
+          <CommandItem>
+            <UserIcon />
+            <span>Profile</span>
+            <CommandShortcut>⌘P</CommandShortcut>
+          </CommandItem>
+          <CommandItem>
+            <SettingsIcon />
+            <span>Settings</span>
+            <CommandShortcut>⌘S</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  ),
+}
+
+export const WithDebris: Story = {
+  render: () => (
+    <Command debris className="w-96">
+      <CommandInput placeholder="Введи команду або шукай..." />
+      <CommandList>
+        <CommandEmpty>Нічого не знайдено.</CommandEmpty>
+        <CommandGroup heading="Швидкі дії">
+          <CommandItem>
+            <CalendarIcon />
+            <span>Calendar</span>
+          </CommandItem>
+          <CommandItem>
+            <SmileIcon />
+            <span>Пошук emoji</span>
+          </CommandItem>
+          <CommandItem>
+            <CalculatorIcon />
+            <span>Calculator</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Налаштування">
           <CommandItem>
             <UserIcon />
             <span>Profile</span>

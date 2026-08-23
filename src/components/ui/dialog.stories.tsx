@@ -12,8 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 
 const meta = {
   title: 'Components/Dialog',
@@ -26,35 +24,28 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   render: () => (
     <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>
-        Edit profile
+      <DialogTrigger render={<Button variant="destructive" />}>
+        Видалити проєкт
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Видалити проєкт?</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Ця дія незворотна. Всі files, history та debris буде видалено
+            permanently.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" defaultValue="Pedro Duarte" />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" defaultValue="@peduarte" />
-          </div>
-        </div>
         <DialogFooter>
-          <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
-          <Button type="submit">Save changes</Button>
+          <DialogClose render={<Button variant="outline" />}>
+            Скасувати
+          </DialogClose>
+          <Button variant="destructive">Видалити</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   ),
   play: async ({ canvas, userEvent }) => {
-    const trigger = canvas.getByRole('button', { name: /edit profile/i })
+    const trigger = canvas.getByRole('button', { name: /видалити проєкт/i })
     await userEvent.click(trigger)
 
     // DialogContent renders through a portal into document.body, so it
@@ -62,14 +53,40 @@ export const Default: Story = {
     const body = within(trigger.ownerDocument.body)
     const dialog = await body.findByRole('dialog')
     await waitFor(() =>
-      expect(within(dialog).getByText('Edit profile')).toBeVisible()
+      expect(within(dialog).getByText('Видалити проєкт?')).toBeVisible()
     )
 
-    await userEvent.click(within(dialog).getByRole('button', { name: /cancel/i }))
+    await userEvent.click(
+      within(dialog).getByRole('button', { name: /скасувати/i })
+    )
     // Closing animates out (duration-100), so the node lingers briefly
     // with data-closed before being unmounted.
     await waitFor(() =>
       expect(body.queryByRole('dialog')).not.toBeInTheDocument()
     )
   },
+}
+
+export const WithDebris: Story = {
+  render: () => (
+    <Dialog>
+      <DialogTrigger render={<Button variant="outline" />}>
+        Створити компонент
+      </DialogTrigger>
+      <DialogContent debris>
+        <DialogHeader>
+          <DialogTitle>Новий компонент</DialogTitle>
+          <DialogDescription>
+            Задай name та variant. Debris активний, поки dialog відкритий.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose render={<Button variant="outline" />}>
+            Скасувати
+          </DialogClose>
+          <Button type="submit">Створити</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  ),
 }

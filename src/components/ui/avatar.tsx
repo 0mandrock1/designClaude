@@ -1,25 +1,51 @@
 import * as React from "react"
 import { Avatar as AvatarPrimitive } from "@base-ui/react/avatar"
 
+import { Debris } from "@/components/debris/Debris"
 import { cn } from "@/lib/utils"
 
 function Avatar({
   className,
   size = "default",
+  debris = false,
+  id,
   ...props
 }: AvatarPrimitive.Root.Props & {
   size?: "default" | "sm" | "lg"
+  debris?: boolean
 }) {
-  return (
+  const avatar = (
     <AvatarPrimitive.Root
       data-slot="avatar"
       data-size={size}
+      id={id}
       className={cn(
         "group/avatar relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:border-border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
         className
       )}
       {...props}
     />
+  )
+
+  if (!debris) {
+    return avatar
+  }
+
+  // Debris bits scatter just outside the circle, like a presence/status
+  // constellation — glyphs orbiting the ring rather than clipped by it.
+  // The circle itself must never clip, so an outer wrapper (not the
+  // avatar root, and not `overflow-hidden`) carries the positioning
+  // context; the avatar keeps its own size/className untouched.
+  return (
+    <span data-slot="avatar-wrapper" className="relative inline-flex">
+      {avatar}
+      <Debris
+        seed={id ?? size}
+        name="avatar"
+        count={2}
+        className="inset-[-40%]"
+      />
+    </span>
   )
 }
 

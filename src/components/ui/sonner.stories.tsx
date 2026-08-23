@@ -19,8 +19,8 @@ export const Default: Story = {
       <Button
         variant="outline"
         onClick={() =>
-          toast('Event has been created', {
-            description: 'Sunday, December 03, 2023 at 9:00 AM',
+          toast('Чергу оновлено', {
+            description: 'JOB-0093 → render-farm-02',
             action: {
               label: 'Undo',
               onClick: () => {},
@@ -39,17 +39,25 @@ export const Variants: Story = {
     <>
       <Toaster />
       <div className="flex gap-2">
-        <Button variant="outline" onClick={() => toast.success('Saved successfully!')}>
+        <Button variant="outline" onClick={() => toast.success('Синхронізовано')}>
           Success
         </Button>
-        <Button variant="outline" onClick={() => toast.error('Something went wrong.')}>
+        <Button variant="outline" onClick={() => toast.error('Помилка запису')}>
           Error
         </Button>
-        <Button variant="outline" onClick={() => toast.warning('Please check your input.')}>
+        <Button variant="outline" onClick={() => toast.warning('Диск заповнено на 90%')}>
           Warning
         </Button>
-        <Button variant="outline" onClick={() => toast.info('New update available.')}>
+        <Button variant="outline" onClick={() => toast.info('Доступний новий білд')}>
           Info
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            toast.loading('Деплой у процесі', { id: 'deploy', duration: 2000 })
+          }
+        >
+          Loading
         </Button>
       </div>
     </>
