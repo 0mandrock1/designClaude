@@ -22,50 +22,50 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
-    <Select defaultValue="apple">
+    <Select defaultValue="techno">
       <SelectTrigger className="w-56">
-        <SelectValue placeholder="Select a fruit" />
+        <SelectValue placeholder="Обери жанр" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectLabel>Techno</SelectLabel>
+          <SelectItem value="techno">Techno</SelectItem>
+          <SelectItem value="acid">Acid</SelectItem>
+          <SelectItem value="hardgroove">Hardgroove</SelectItem>
         </SelectGroup>
         <SelectSeparator />
         <SelectGroup>
-          <SelectLabel>Vegetables</SelectLabel>
-          <SelectItem value="carrot">Carrot</SelectItem>
-          <SelectItem value="potato">Potato</SelectItem>
+          <SelectLabel>Не techno</SelectLabel>
+          <SelectItem value="ebm">EBM</SelectItem>
+          <SelectItem value="idm">IDM</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
   ),
   play: async ({ canvas, userEvent }) => {
     const trigger = canvas.getByRole('combobox')
-    await expect(trigger).toHaveTextContent(/apple/i)
+    await expect(trigger).toHaveTextContent(/techno/i)
 
     await userEvent.click(trigger)
 
     // SelectContent renders through a portal into document.body.
     const body = within(trigger.ownerDocument.body)
-    const banana = await body.findByRole('option', { name: 'Banana' })
-    await userEvent.click(banana)
+    const acid = await body.findByRole('option', { name: 'Acid' })
+    await userEvent.click(acid)
 
-    await expect(trigger).toHaveTextContent(/banana/i)
+    await expect(trigger).toHaveTextContent(/acid/i)
   },
 }
 
 export const Small: Story = {
   render: () => (
-    <Select defaultValue="apple">
+    <Select defaultValue="techno">
       <SelectTrigger size="sm" className="w-56">
-        <SelectValue placeholder="Select a fruit" />
+        <SelectValue placeholder="Обери жанр" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="apple">Apple</SelectItem>
-        <SelectItem value="banana">Banana</SelectItem>
+        <SelectItem value="techno">Techno</SelectItem>
+        <SelectItem value="acid">Acid</SelectItem>
       </SelectContent>
     </Select>
   ),
@@ -73,13 +73,40 @@ export const Small: Story = {
 
 export const Disabled: Story = {
   render: () => (
-    <Select defaultValue="apple" disabled>
+    <Select defaultValue="techno" disabled>
       <SelectTrigger className="w-56">
-        <SelectValue placeholder="Select a fruit" />
+        <SelectValue placeholder="Обери жанр" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="apple">Apple</SelectItem>
+        <SelectItem value="techno">Techno</SelectItem>
       </SelectContent>
     </Select>
+  ),
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4 p-8">
+      <Select defaultValue="techno">
+        <SelectTrigger debris id="genre-live" className="w-56">
+          <SelectValue placeholder="Обери жанр" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="techno">Techno</SelectItem>
+          <SelectItem value="acid">Acid</SelectItem>
+          <SelectItem value="hardgroove">Hardgroove</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select defaultValue="ebm">
+        <SelectTrigger debris id="genre-idle" size="sm" className="w-56">
+          <SelectValue placeholder="Обери жанр" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="ebm">EBM</SelectItem>
+          <SelectItem value="idm">IDM</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   ),
 }

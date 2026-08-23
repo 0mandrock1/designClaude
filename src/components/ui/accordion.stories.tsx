@@ -20,28 +20,28 @@ export const Default: Story = {
   render: () => (
     <Accordion defaultValue={['item-1']} className="w-96">
       <AccordionItem value="item-1">
-        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+        <AccordionTrigger>Це accessible?</AccordionTrigger>
         <AccordionContent>
-          Yes. It adheres to the WAI-ARIA design pattern.
+          Так. WAI-ARIA паттерн дотримано.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
-        <AccordionTrigger>Is it styled?</AccordionTrigger>
+        <AccordionTrigger>Це стилізовано?</AccordionTrigger>
         <AccordionContent>
-          Yes. It comes with default styles that match the other components.
+          Так. Дефолтні стилі узгоджені з рештою компонентів.
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
-        <AccordionTrigger>Is it animated?</AccordionTrigger>
+        <AccordionTrigger>Це анімовано?</AccordionTrigger>
         <AccordionContent>
-          Yes. It's animated by default, but you can disable it if you prefer.
+          Так, за замовчуванням. Можна вимкнути.
         </AccordionContent>
       </AccordionItem>
     </Accordion>
   ),
   play: async ({ canvas, userEvent }) => {
-    const first = canvas.getByRole('button', { name: /is it accessible/i })
-    const second = canvas.getByRole('button', { name: /is it styled/i })
+    const first = canvas.getByRole('button', { name: /це accessible/i })
+    const second = canvas.getByRole('button', { name: /це стилізовано/i })
     await expect(first).toHaveAttribute('aria-expanded', 'true')
     await expect(second).toHaveAttribute('aria-expanded', 'false')
     await userEvent.click(second)
@@ -53,12 +53,32 @@ export const Multiple: Story = {
   render: () => (
     <Accordion defaultValue={['item-1', 'item-2']} className="w-96">
       <AccordionItem value="item-1">
-        <AccordionTrigger>First item</AccordionTrigger>
-        <AccordionContent>Both items can be open at once.</AccordionContent>
+        <AccordionTrigger>Перший пункт</AccordionTrigger>
+        <AccordionContent>Обидва можуть бути відкриті одночасно.</AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
-        <AccordionTrigger>Second item</AccordionTrigger>
-        <AccordionContent>Because both are in defaultValue.</AccordionContent>
+        <AccordionTrigger>Другий пункт</AccordionTrigger>
+        <AccordionContent>Бо обидва в defaultValue.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  ),
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <Accordion defaultValue={['log-1']} className="w-96">
+      <AccordionItem debris value="log-1">
+        <AccordionTrigger>JOB-0091</AccordionTrigger>
+        <AccordionContent>render-farm-03, done, 412s.</AccordionContent>
+      </AccordionItem>
+      <AccordionItem debris value="log-2">
+        <AccordionTrigger>JOB-0092</AccordionTrigger>
+        <AccordionContent>render-farm-01, queued.</AccordionContent>
+      </AccordionItem>
+      <AccordionItem debris value="log-3">
+        <AccordionTrigger>JOB-0093</AccordionTrigger>
+        <AccordionContent>render-farm-02, live, 87s.</AccordionContent>
       </AccordionItem>
     </Accordion>
   ),

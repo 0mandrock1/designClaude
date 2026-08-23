@@ -11,32 +11,36 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+function DefaultCalendarDemo() {
+  const [date, setDate] = React.useState<Date | undefined>(new Date())
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      className="rounded-xl border"
+    />
+  )
+}
+
 export const Default: Story = {
-  render: () => {
-    const [date, setDate] = React.useState<Date | undefined>(new Date())
-    return (
-      <Calendar
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        className="rounded-xl border"
-      />
-    )
-  },
+  render: () => <DefaultCalendarDemo />,
+}
+
+function RangeCalendarDemo() {
+  const [range, setRange] = React.useState<
+    { from: Date | undefined; to?: Date | undefined } | undefined
+  >({ from: new Date(), to: undefined })
+  return (
+    <Calendar
+      mode="range"
+      selected={range}
+      onSelect={setRange}
+      className="rounded-xl border"
+    />
+  )
 }
 
 export const Range: Story = {
-  render: () => {
-    const [range, setRange] = React.useState<
-      { from: Date | undefined; to?: Date | undefined } | undefined
-    >({ from: new Date(), to: undefined })
-    return (
-      <Calendar
-        mode="range"
-        selected={range}
-        onSelect={setRange}
-        className="rounded-xl border"
-      />
-    )
-  },
+  render: () => <RangeCalendarDemo />,
 }

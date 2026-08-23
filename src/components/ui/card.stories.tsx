@@ -21,24 +21,24 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
-    <Card className="w-80">
+    <Card className="w-80" id="create-project">
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardTitle>Новий проєкт</CardTitle>
+        <CardDescription>Задеплой в один клік, без драми.</CardDescription>
         <CardAction>
           <Button variant="ghost" size="sm">
-            Skip
+            Пропустити
           </Button>
         </CardAction>
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          Fill in the details below to get started with your new project.
+          Заповни поля нижче — і воно поїхало.
         </p>
       </CardContent>
       <CardFooter className="gap-2">
-        <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        <Button variant="outline">Відміна</Button>
+        <Button>Задеплоїти</Button>
       </CardFooter>
     </Card>
   ),
@@ -46,13 +46,30 @@ export const Default: Story = {
 
 export const Small: Story = {
   render: () => (
-    <Card size="sm" className="w-72">
+    <Card size="sm" className="w-72" id="compact">
       <CardHeader>
-        <CardTitle>Compact card</CardTitle>
-        <CardDescription>Uses the smaller spacing variant.</CardDescription>
+        <CardTitle>Компактна картка</CardTitle>
+        <CardDescription>Менше відступів, той самий характер.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-muted-foreground">Less padding overall.</p>
+        <p className="text-sm text-muted-foreground">Щільніше, без повітря.</p>
+      </CardContent>
+    </Card>
+  ),
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <Card className="relative w-80" id="live-process" debris>
+      <CardHeader>
+        <CardTitle>Процес живий</CardTitle>
+        <CardDescription>Осад — випадковий, необов'язковий.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">
+          Гліфи й мікротекст збиті з сітки. Картка — ні.
+        </p>
       </CardContent>
     </Card>
   ),

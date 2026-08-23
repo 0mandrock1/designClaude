@@ -13,33 +13,31 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   render: () => (
-    <Tabs defaultValue="account" className="w-80">
+    <Tabs defaultValue="overview" className="w-80">
       <TabsList className="w-full">
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="overview">Огляд</TabsTrigger>
+        <TabsTrigger value="settings">Налаштування</TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
+      <TabsContent value="overview">
         <p className="text-sm text-muted-foreground">
-          Make changes to your account here.
+          Стан системи, коротко.
         </p>
       </TabsContent>
-      <TabsContent value="password">
+      <TabsContent value="settings">
         <p className="text-sm text-muted-foreground">
-          Change your password here.
+          Тут керуєш конфігом.
         </p>
       </TabsContent>
     </Tabs>
   ),
   play: async ({ canvas, userEvent }) => {
-    const accountTab = canvas.getByRole('tab', { name: /account/i })
-    const passwordTab = canvas.getByRole('tab', { name: /password/i })
-    await expect(accountTab).toHaveAttribute('aria-selected', 'true')
-    await expect(passwordTab).toHaveAttribute('aria-selected', 'false')
-    await userEvent.click(passwordTab)
-    await expect(passwordTab).toHaveAttribute('aria-selected', 'true')
-    await expect(
-      canvas.getByText('Change your password here.')
-    ).toBeVisible()
+    const overviewTab = canvas.getByRole('tab', { name: /огляд/i })
+    const settingsTab = canvas.getByRole('tab', { name: /налаштування/i })
+    await expect(overviewTab).toHaveAttribute('aria-selected', 'true')
+    await expect(settingsTab).toHaveAttribute('aria-selected', 'false')
+    await userEvent.click(settingsTab)
+    await expect(settingsTab).toHaveAttribute('aria-selected', 'true')
+    await expect(canvas.getByText('Тут керуєш конфігом.')).toBeVisible()
   },
 }
 
@@ -47,18 +45,18 @@ export const LineVariant: Story = {
   render: () => (
     <Tabs defaultValue="overview" className="w-80">
       <TabsList variant="line" className="w-full">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        <TabsTrigger value="reports">Reports</TabsTrigger>
+        <TabsTrigger value="overview">Огляд</TabsTrigger>
+        <TabsTrigger value="activity">Активність</TabsTrigger>
+        <TabsTrigger value="settings">Налаштування</TabsTrigger>
       </TabsList>
       <TabsContent value="overview">
-        <p className="text-sm text-muted-foreground">Overview content.</p>
+        <p className="text-sm text-muted-foreground">Загальний стан.</p>
       </TabsContent>
-      <TabsContent value="analytics">
-        <p className="text-sm text-muted-foreground">Analytics content.</p>
+      <TabsContent value="activity">
+        <p className="text-sm text-muted-foreground">Лог подій, живий.</p>
       </TabsContent>
-      <TabsContent value="reports">
-        <p className="text-sm text-muted-foreground">Reports content.</p>
+      <TabsContent value="settings">
+        <p className="text-sm text-muted-foreground">Параметри деплою.</p>
       </TabsContent>
     </Tabs>
   ),
@@ -66,16 +64,42 @@ export const LineVariant: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <Tabs defaultValue="account" orientation="vertical" className="w-96">
+    <Tabs defaultValue="overview" orientation="vertical" className="w-96">
       <TabsList>
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="overview">Огляд</TabsTrigger>
+        <TabsTrigger value="activity">Активність</TabsTrigger>
+        <TabsTrigger value="settings">Налаштування</TabsTrigger>
       </TabsList>
-      <TabsContent value="account">
-        <p className="text-sm text-muted-foreground">Account settings.</p>
+      <TabsContent value="overview">
+        <p className="text-sm text-muted-foreground">Загальний стан системи.</p>
       </TabsContent>
-      <TabsContent value="password">
-        <p className="text-sm text-muted-foreground">Password settings.</p>
+      <TabsContent value="activity">
+        <p className="text-sm text-muted-foreground">Останні події, без фільтру.</p>
+      </TabsContent>
+      <TabsContent value="settings">
+        <p className="text-sm text-muted-foreground">Все, що можна зламати.</p>
+      </TabsContent>
+    </Tabs>
+  ),
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <Tabs defaultValue="overview" className="w-80">
+      <TabsList className="w-full">
+        <TabsTrigger value="overview">Огляд</TabsTrigger>
+        <TabsTrigger value="activity">Активність</TabsTrigger>
+      </TabsList>
+      <TabsContent value="overview" debris className="min-h-24 p-2">
+        <p className="text-sm text-muted-foreground">
+          Панель живе своїм життям, поки процес не завершився.
+        </p>
+      </TabsContent>
+      <TabsContent value="activity" debris className="min-h-24 p-2">
+        <p className="text-sm text-muted-foreground">
+          Осад — по осередку кожної вкладки, детермінований на value.
+        </p>
       </TabsContent>
     </Tabs>
   ),

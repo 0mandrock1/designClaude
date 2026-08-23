@@ -75,3 +75,13 @@ export const Group: Story = {
     </AvatarGroup>
   ),
 }
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <Avatar size="lg" id="operator-42" debris>
+      <AvatarImage src="https://github.com/shadcn.png" alt="оператор" />
+      <AvatarFallback>ОП</AvatarFallback>
+    </Avatar>
+  ),
+}

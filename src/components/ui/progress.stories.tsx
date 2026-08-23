@@ -29,7 +29,7 @@ export const WithLabel: Story = {
   render: () => (
     <Progress value={65} className="w-72">
       <div className="flex justify-between">
-        <ProgressLabel>Uploading...</ProgressLabel>
+        <ProgressLabel>Завантаження...</ProgressLabel>
         <ProgressValue />
       </div>
     </Progress>
@@ -41,4 +41,44 @@ export const WithLabel: Story = {
     await expect(progressbar).toHaveAttribute('aria-valuenow', '65')
     await expect(canvas.getByText('65%')).toBeVisible()
   },
+}
+
+export const Complete: Story = {
+  name: 'Complete (ok state)',
+  render: () => (
+    <Progress value={100} className="w-72">
+      <div className="flex justify-between">
+        <ProgressLabel>Деплой</ProgressLabel>
+        <ProgressValue />
+      </div>
+    </Progress>
+  ),
+  play: async ({ canvas }) => {
+    // At value === max the base-ui primitive marks data-complete on both
+    // Root and Indicator — that's what flips the fill from action-purple
+    // to --ok (lime) via `data-complete:bg-ok`, no extra prop needed.
+    const progressbar = canvas.getByRole('progressbar')
+    await expect(progressbar).toHaveAttribute('aria-valuenow', '100')
+    await expect(progressbar).toHaveAttribute('data-complete')
+  },
+}
+
+export const WithDebris: Story = {
+  name: 'Debris (chaos layer)',
+  render: () => (
+    <div className="flex flex-col gap-6 p-8">
+      <Progress value={40} debris className="w-72 p-1">
+        <div className="flex justify-between">
+          <ProgressLabel>Синк ще йде</ProgressLabel>
+          <ProgressValue />
+        </div>
+      </Progress>
+      <Progress value={100} debris className="w-72 p-1">
+        <div className="flex justify-between">
+          <ProgressLabel>Готово</ProgressLabel>
+          <ProgressValue />
+        </div>
+      </Progress>
+    </div>
+  ),
 }

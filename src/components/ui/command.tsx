@@ -13,21 +13,28 @@ import {
   InputGroup,
   InputGroupAddon,
 } from "@/components/ui/input-group"
+import { Debris } from "@/components/debris/Debris"
 import { SearchIcon, CheckIcon } from "lucide-react"
 
 function Command({
   className,
+  debris = false,
+  id,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive>) {
+}: React.ComponentProps<typeof CommandPrimitive> & { debris?: boolean }) {
   return (
     <CommandPrimitive
       data-slot="command"
+      id={id}
       className={cn(
-        "flex size-full flex-col overflow-hidden rounded-xl! bg-popover p-1 text-popover-foreground",
+        "relative flex size-full flex-col overflow-hidden rounded-card! border border-border bg-popover p-1 text-popover-foreground shadow-glow-ambient",
         className
       )}
       {...props}
-    />
+    >
+      {props.children}
+      {debris && <Debris seed={id ?? "command"} name="command" />}
+    </CommandPrimitive>
   )
 }
 
@@ -53,7 +60,7 @@ function CommandDialog({
       </DialogHeader>
       <DialogContent
         className={cn(
-          "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
+          "top-1/3 translate-y-0 overflow-hidden rounded-card! p-0",
           className
         )}
         showCloseButton={showCloseButton}
@@ -173,7 +180,7 @@ function CommandShortcut({
     <span
       data-slot="command-shortcut"
       className={cn(
-        "ml-auto text-xs tracking-widest text-muted-foreground group-data-selected/command-item:text-foreground",
+        "ml-auto font-mono text-xs tracking-widest text-muted-foreground group-data-selected/command-item:text-foreground",
         className
       )}
       {...props}
