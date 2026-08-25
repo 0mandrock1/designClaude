@@ -182,3 +182,15 @@
     animation: debris-glitch 240ms steps(2) 1;
   }
 }
+
+/* mandrock0 is dark-only, and `body { @apply bg-background }` above lives in
+   @layer base — unlayered host styles beat layered ones outright, so any host
+   page that sets its own body background (the claude.ai/design preview card
+   template hardcodes `body{background:#fff}`) would win and strand the DS on
+   white, where the ghost and link button variants are invisible.
+   This rule is unlayered and one step more specific, so the design system's
+   own surface holds. Identical in effect to the rule above for this app. */
+html body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
