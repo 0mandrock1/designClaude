@@ -1,0 +1,64 @@
+{
+  "projectId": "17e916e7-e258-43c3-85fd-75b7d6399f1d",
+  "shape": "storybook",
+  "storybookConfigDir": ".storybook",
+  "storybookStatic": ".design-sync/sb-reference",
+  "pkg": "designclaude",
+  "globalName": "Mandrock0",
+  "srcDir": "src/components",
+  "tsconfig": "tsconfig.app.json",
+  "titleMap": {
+    "mandrock0": null,
+    "Chart": "ChartContainer",
+    "Resizable": "ResizablePanelGroup",
+    "Sonner": "Toaster"
+  },
+  "entry": ".design-sync/entry.ts",
+  "extraEntries": [
+    "./.design-sync/entry.ts"
+  ],
+  "overrides": {
+    "Accordion": {
+      "cardMode": "column"
+    },
+    "Alert": {
+      "cardMode": "column"
+    },
+    "Bubble": {
+      "cardMode": "column"
+    },
+    "Carousel": {
+      "cardMode": "column"
+    },
+    "Command": {
+      "cardMode": "column"
+    },
+    "Item": {
+      "cardMode": "column"
+    },
+    "Message": {
+      "cardMode": "column"
+    },
+    "ScrollArea": {
+      "cardMode": "column"
+    },
+    "Tabs": {
+      "cardMode": "column"
+    },
+    "Progress": {
+      "cardMode": "single",
+      "primaryStory": "WithLabel"
+    },
+    "Sidebar": {
+      "cardMode": "single",
+      "primaryStory": "Default"
+    },
+    "Toaster": {
+      "cardMode": "column"
+    },
+    "ChartContainer": {
+      "cardMode": "single"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}
