@@ -15,9 +15,9 @@
   --radius-card: 0.25rem;
   --radius-control: 1rem;
 
-  --accent-purple:  oklch(62% .27 300);
+  --accent-purple:  oklch(70% .30 320);
   --accent-cyan:    oklch(80% .15 205);
-  --accent-lime:    oklch(87% .22 132);
+  --accent-lime:    oklch(86% .21 150);
   --accent-crimson: oklch(60% .23 13);
   --accent-shader:  var(--accent-purple);
 
@@ -27,24 +27,34 @@
   --ok:     var(--accent-lime);
   --alive:  var(--accent-crimson);
 
-  --background: oklch(12.5% .085 356);
-  --foreground: oklch(96% .03 352);
-  --card:       oklch(18% .105 355);
+  --background: oklch(11% .105 14);
+  --foreground: oklch(96% .035 20);
+  --card:       oklch(16.5% .125 12);
   --card-foreground: var(--foreground);
-  --popover:    oklch(18% .105 355);
+  --popover:    oklch(16.5% .125 12);
   --popover-foreground: var(--foreground);
   --primary:    var(--accent-shader);
   --primary-foreground: oklch(10% .04 356);
-  --secondary:  oklch(24% .125 354);
+  --secondary:  oklch(23.5% .14 12);
   --secondary-foreground: var(--foreground);
-  --muted:      oklch(21% .115 355);
-  --muted-foreground: oklch(68% .09 352);
+  --muted:      oklch(20% .13 12);
+  --muted-foreground: oklch(70% .095 16);
   --accent:     var(--accent-shader);
   --accent-foreground: oklch(10% .04 356);
   --destructive: oklch(70% .18 38);
-  --border:     oklch(30% .145 353 / .55);
-  --input:      oklch(30% .145 353 / .7);
+  --border:     oklch(33% .16 10 / .55);
+  --input:      oklch(33% .16 10 / .7);
   --ring:       var(--accent-shader);
+
+  /* Artists panel — the one deliberate inversion in a dark-only system: the
+     section flips to print (paper + ink) so the roster reads as a poster, not
+     as more UI. Scoped to the panel; nothing else inherits these. */
+  --artists-paper: oklch(76% .03 350);
+  --artists-shade: oklch(74% .02 350);
+  --artists-card:  oklch(97% .01 350);
+  --artists-ink:   oklch(34% .16 264);
+  --artists-well:  oklch(18% .02 264);
+  --artists-well-foreground: oklch(96% .01 350);
 
   /* one glow color, three strengths — never three colors */
   --glow: var(--accent-shader);
@@ -115,6 +125,12 @@
   --color-ok: var(--ok);
   --color-alive: var(--alive);
   --color-glow: var(--glow);
+  --color-artists-paper: var(--artists-paper);
+  --color-artists-shade: var(--artists-shade);
+  --color-artists-card: var(--artists-card);
+  --color-artists-ink: var(--artists-ink);
+  --color-artists-well: var(--artists-well);
+  --color-artists-well-foreground: var(--artists-well-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -159,6 +175,13 @@
    a11y tree, the copy buffer, or in-page search. */
 .debris-bit::before {
   content: var(--debris-content);
+}
+
+/* mandrock0 ambient layer — the one bit of paint that has to move on its own.
+   Runs on the `sweep` layer only, which `mode="hostile"` is alone in enabling. */
+@keyframes ambient-sweep {
+  0%   { transform: translateY(-14vh); }
+  100% { transform: translateY(114vh); }
 }
 
 @keyframes debris-pulse {

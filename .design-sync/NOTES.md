@@ -115,3 +115,34 @@ What can silently go stale — check these first on the next sync.
 - **This sync used no fan-out subagents** (the user's global config forbids the Agent tool unless
   asked), so `.design-sync/learnings/` was never created. A future run that does fan out must fold
   learnings before the driver will pass.
+
+## mandrock.me layout import (2026-08-25)
+
+The `mandrock.me` Claude Design export (`dc.html` + tailwind bundle) was folded back into the
+library: the palette was re-tuned to the layout's values and three of its structures were
+extracted as components. What a future sync needs to know:
+
+- **The palette moved off the plum hues onto crimson/magenta.** `--accent-purple`, `--accent-lime`,
+  `--background`, `--foreground`, `--card`, `--popover`, `--secondary`, `--muted`,
+  `--muted-foreground`, `--border` and `--input` all changed value in `src/index.css`.
+  `--accent-cyan`, `--accent-crimson` and `--destructive` did not. Every screenshot and captured
+  card from before this date grades against the old palette — a diff against them is expected,
+  not a regression.
+- **`button.stories.tsx` / `CssCheck` asserts the resolved `--primary` literally**
+  (`oklch(0.7 0.3 320)`). It is the only test in the repo that hardcodes a token *value*, so it
+  fails the moment `--accent-purple` is retuned again. That is deliberate — it is the tripwire
+  proving the theme actually loaded — but it must be updated in the same commit as the token.
+  Note the assertion uses the browser's serialized form (`0.7 0.3`), not the authored `70% .30`.
+- **Two components were added: `Ambient` and `ArtistSlot`.** Both went through
+  `.design-sync/gen-entry.sh` and both carry `cardMode: "column"` overrides in `config.json`.
+- **`ArtistsPanel` deliberately inverts the palette to print** — `--artists-paper` / `--artists-ink`
+  and friends in `src/index.css`, registered in `@theme inline` so `bg-artists-paper` and the
+  `border-artists-ink/30` opacity modifiers compile. It is the one light surface in a dark-only
+  system, and it is scoped to the panel. Do not "fix" it toward the dark tokens.
+- **`Ambient` layers are `position: fixed` by default**, which escapes any preview cell. The
+  stories all pass `anchor="absolute"` so they stay inside their frame; `cardMode: "column"` is
+  enough and `single` is not needed. If a future story forgets `anchor`, its card will paint over
+  the whole preview page.
+- **`Ambient` sits at 6 stories and `ArtistSlot` at 7 — the cap.** `calm` and `hostile` were
+  deliberately folded into the single `Modes` story rather than given their own, to stay under
+  `--max-stories 7`. Adding one more story to either needs the flag raised in the same change.

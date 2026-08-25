@@ -58,6 +58,12 @@
     },
     "ChartContainer": {
       "cardMode": "single"
+    },
+    "Ambient": {
+      "cardMode": "column"
+    },
+    "ArtistSlot": {
+      "cardMode": "column"
     }
   },
   "readmeHeader": ".design-sync/conventions.md"

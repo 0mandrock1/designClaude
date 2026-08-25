@@ -50,7 +50,7 @@ export const CssCheck: Story = {
     // no .dark toggle needed. Assert the theme actually loaded (not the
     // browser default transparent) and matches the resolved action-purple.
     await expect(backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
-    await expect(backgroundColor).toBe('oklch(0.62 0.27 300)')
+    await expect(backgroundColor).toBe('oklch(0.7 0.3 320)')
   },
 }
 
