@@ -29,7 +29,8 @@ h1 em{font-style:normal;color:var(--accent-purple);text-shadow:0 0 35px var(--ac
 .node>svg:not(.arrow){color:var(--accent-cyan)}
 .node p{margin:5px 0 0;color:var(--muted-foreground);font-size:.82rem}
 .node-pitch{display:block;margin-top:12px;color:var(--accent-lime);font:700 9px monospace;letter-spacing:.12em}
-.pretext-label{display:block;margin-bottom:8px;color:var(--accent-cyan);font:700 9px monospace;letter-spacing:.11em}
+.context-label{display:block;margin-bottom:8px;color:var(--accent-cyan);font:700 9px monospace;letter-spacing:.11em}
+.node[data-locked="true"]{background:color-mix(in oklch,var(--card) 74%,var(--muted));border-style:dashed}.node[data-locked="true"]>svg:not(.arrow){color:var(--muted-foreground)}.node .locked-badge{color:var(--accent-crimson);font-size:9px;letter-spacing:.08em}
 .node b{position:absolute;top:9px;right:32px;font:9px monospace;color:var(--accent-lime)}
 .arrow{position:absolute;right:10px;top:8px}
 .artistgrid{display:grid;grid-template-columns:1fr 1fr;margin-top:28px}
