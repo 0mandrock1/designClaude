@@ -18,7 +18,7 @@
   --accent-purple:  oklch(62% .27 300);
   --accent-cyan:    oklch(80% .15 205);
   --accent-lime:    oklch(87% .22 132);
-  --accent-crimson: oklch(60% .23 13);
+  --accent-crimson: oklch(62% .19 22);
   --accent-shader:  var(--accent-purple);
 
   /* role layer, sits on top of shadcn semantics below */
@@ -27,23 +27,23 @@
   --ok:     var(--accent-lime);
   --alive:  var(--accent-crimson);
 
-  --background: oklch(12.5% .085 356);
-  --foreground: oklch(96% .03 352);
-  --card:       oklch(18% .105 355);
+  --background: oklch(12.5% .03 356);
+  --foreground: oklch(96% .012 352);
+  --card:       oklch(18% .035 355);
   --card-foreground: var(--foreground);
-  --popover:    oklch(18% .105 355);
+  --popover:    oklch(18% .035 355);
   --popover-foreground: var(--foreground);
   --primary:    var(--accent-shader);
   --primary-foreground: oklch(10% .04 356);
-  --secondary:  oklch(24% .125 354);
+  --secondary:  oklch(24% .045 354);
   --secondary-foreground: var(--foreground);
-  --muted:      oklch(21% .115 355);
-  --muted-foreground: oklch(68% .09 352);
+  --muted:      oklch(21% .04 355);
+  --muted-foreground: oklch(68% .035 352);
   --accent:     var(--accent-shader);
   --accent-foreground: oklch(10% .04 356);
   --destructive: oklch(70% .18 38);
-  --border:     oklch(30% .145 353 / .55);
-  --input:      oklch(30% .145 353 / .7);
+  --border:     oklch(30% .05 353 / .6);
+  --input:      oklch(30% .05 353 / .7);
   --ring:       var(--accent-shader);
 
   /* one glow color, three strengths — never three colors */
