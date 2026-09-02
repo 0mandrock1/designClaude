@@ -3,7 +3,10 @@
 set -euo pipefail
 
 src="$(cd "$(dirname "$0")" && pwd)"
-dst=/var/www/html/mandrock-landing
+# nginx (sites-available/mandrock-me.conf, root for mandrock.me/www) serves
+# from /var/www/html/_apps/mandrock-landing — /var/www/html/mandrock-landing
+# doesn't exist and was never the live root, this was a stale path.
+dst=/var/www/html/_apps/mandrock-landing
 
 cd "$src"
 npm run build
