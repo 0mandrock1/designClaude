@@ -88,9 +88,11 @@ What can silently go stale — check these first on the next sync.
 - **`conventions.md` enumerates class names verified against THIS build.** Tailwind v4 compiles
   only the utilities actually used, so the shipped class set changes whenever component code
   changes. On re-sync, re-run the validation pass (grep each documented class against
-  `ds-bundle/_ds_bundle.css`) and fix or cut any name that no longer resolves. Known-absent today
-  and deliberately documented as such: `text-action`, `text-accent-cyan`, `text-accent-lime`,
-  `bg-chart-1`, `text-xl`, `text-2xl`, `space-y-4`, `grid-cols-3`.
+  `ds-bundle/_ds_bundle.css`) and fix or cut any name that no longer resolves. Known-absent as of
+  2026-10-02 and documented as such: `space-y-8`, `grid-cols-5`, `gap-12`, `p-12`, `text-7xl`,
+  `h-screen`, `bg-chart-6`. (`text-xl`, `text-2xl`, `space-y-4`, `grid-cols-3`, `text-accent-*` and
+  `bg-chart-1` became present once the void/glitch stories used them; the compiled set grows with
+  the stories.)
 - **The storybook reference must be rebuilt whenever `src/` changes.** The component CSS is
   scraped from it (`[CSS_FROM_STORYBOOK]`), so a stale reference means grading against the old
   design AND shipping the old stylesheet. `[REFERENCE_STALE?]` in the capture log means it was

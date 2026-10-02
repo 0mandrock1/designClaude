@@ -19,10 +19,10 @@ need their own wrapper, and will throw or render inert without it:
 ### Styling idiom — Tailwind v4 utilities, but a COMPILED SUBSET
 
 This is the one rule that will silently ruin output if ignored. `_ds_bundle.css` is Tailwind's
-**compiled** stylesheet — it contains only the ~650 classes the library's own components and
+**compiled** stylesheet — it contains only the ~610 classes the library's own components and
 stories happened to use. A utility that was never used **does not exist**, and writing it produces
-no style and no error. Verified examples that are *absent*: `text-xl`, `text-2xl`, `space-y-4`,
-`grid-cols-3`, `text-accent-cyan`, `text-accent-lime`, `bg-chart-1`.
+no style and no error. Verified examples that are *absent*: `space-y-8`, `grid-cols-5`,
+`gap-12`, `p-12`, `text-7xl`, `h-screen`, `bg-chart-6`.
 
 So:
 
@@ -120,7 +120,7 @@ info 12.1, ok 15.0, action 4.9, alive 5.3).
 
 Read `_ds/<folder>/styles.css` and its `@import`s before styling — it is the authority on which
 classes exist. Per component, read `components/components/<Name>/<Name>.prompt.md` (usage) and
-`<Name>.d.ts` (props). All 71 components sit under the single `components` group.
+`<Name>.d.ts` (props). All 72 components sit under the single `components` group.
 
 ### Idiomatic example
 
