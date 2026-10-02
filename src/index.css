@@ -15,10 +15,10 @@
   --radius-card: 0.25rem;
   --radius-control: 1rem;
 
-  --accent-purple:  oklch(70% .30 320);
+  --accent-purple:  oklch(62% .27 300);
   --accent-cyan:    oklch(80% .15 205);
-  --accent-lime:    oklch(86% .21 150);
-  --accent-crimson: oklch(60% .23 13);
+  --accent-lime:    oklch(87% .22 132);
+  --accent-crimson: oklch(62% .19 22);
   --accent-shader:  var(--accent-purple);
 
   /* role layer, sits on top of shadcn semantics below */
@@ -29,32 +29,32 @@
 
   /* true black — the only zero-luminance colour in the system. --background is
      a tinted near-black, so void reads as a hole punched *through* the surface.
-     Measured WCAG contrast (both the crimson and the de-chroma substrate):
-       foreground on void 18.1–18.6   muted-foreground 7.2–7.5
-       info 12.1  ok 14.8–15.0  action 4.9–6.6  alive 4.7–5.3   → all pass AA text
-       void vs background 1.04–1.05, vs card 1.11–1.14          → NOT a boundary:
+     Measured WCAG contrast on this palette:
+       foreground on void 18.6   muted-foreground 7.2   info 12.1   ok 15.0
+       action 4.9   alive 5.3                       → all pass AA text
+       void vs background 1.04, vs card 1.11        → NOT a boundary:
      void never carries an edge on its own — frame it (border / accent) or fill it
      with text. See README "System rules". */
   --void: oklch(0 0 0);
   --void-foreground: var(--foreground);
 
-  --background: oklch(11% .105 14);
-  --foreground: oklch(96% .035 20);
-  --card:       oklch(16.5% .125 12);
+  --background: oklch(12.5% .03 356);
+  --foreground: oklch(96% .012 352);
+  --card:       oklch(18% .035 355);
   --card-foreground: var(--foreground);
-  --popover:    oklch(16.5% .125 12);
+  --popover:    oklch(18% .035 355);
   --popover-foreground: var(--foreground);
   --primary:    var(--accent-shader);
   --primary-foreground: oklch(10% .04 356);
-  --secondary:  oklch(23.5% .14 12);
+  --secondary:  oklch(24% .045 354);
   --secondary-foreground: var(--foreground);
-  --muted:      oklch(20% .13 12);
-  --muted-foreground: oklch(70% .095 16);
+  --muted:      oklch(21% .04 355);
+  --muted-foreground: oklch(68% .035 352);
   --accent:     var(--accent-shader);
   --accent-foreground: oklch(10% .04 356);
   --destructive: oklch(70% .18 38);
-  --border:     oklch(33% .16 10 / .55);
-  --input:      oklch(33% .16 10 / .7);
+  --border:     oklch(30% .05 353 / .6);
+  --input:      oklch(30% .05 353 / .7);
   --ring:       var(--accent-shader);
 
   /* Artists panel — the one deliberate inversion in a dark-only system: the
