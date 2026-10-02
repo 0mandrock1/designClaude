@@ -39,6 +39,34 @@ export const Roles: Story = {
   ),
 }
 
+/**
+ * True-black tags. Role text on void passes AA for every role (alive is the
+ * floor at ~4.7:1), so a void badge can carry a role colour as its text.
+ */
+export const Void: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Badge variant="void">Войд</Badge>
+      <Badge variant="void" className="text-action">
+        action
+      </Badge>
+      <Badge variant="void" className="text-info">
+        info
+      </Badge>
+      <Badge variant="void" className="text-ok">
+        ok
+      </Badge>
+      <Badge variant="void" className="text-alive">
+        alive
+      </Badge>
+      <Badge variant="invert">Інверт</Badge>
+      <Badge variant="void" debris>
+        Осад
+      </Badge>
+    </div>
+  ),
+}
+
 export const WithIcon: Story = {
   render: () => (
     <Badge variant="secondary">

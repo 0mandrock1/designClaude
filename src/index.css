@@ -27,6 +27,17 @@
   --ok:     var(--accent-lime);
   --alive:  var(--accent-crimson);
 
+  /* true black — the only zero-luminance colour in the system. --background is
+     a tinted near-black, so void reads as a hole punched *through* the surface.
+     Measured WCAG contrast on this palette:
+       foreground on void 18.6   muted-foreground 7.2   info 12.1   ok 15.0
+       action 4.9   alive 5.3                       → all pass AA text
+       void vs background 1.04, vs card 1.11        → NOT a boundary:
+     void never carries an edge on its own — frame it (border / accent) or fill it
+     with text. See README "System rules". */
+  --void: oklch(0 0 0);
+  --void-foreground: var(--foreground);
+
   --background: oklch(12.5% .03 356);
   --foreground: oklch(96% .012 352);
   --card:       oklch(18% .035 355);
@@ -45,6 +56,16 @@
   --border:     oklch(30% .05 353 / .6);
   --input:      oklch(30% .05 353 / .7);
   --ring:       var(--accent-shader);
+
+  /* Artists panel — the one deliberate inversion in a dark-only system: the
+     section flips to print (paper + ink) so the roster reads as a poster, not
+     as more UI. Scoped to the panel; nothing else inherits these. */
+  --artists-paper: oklch(76% .03 350);
+  --artists-shade: oklch(74% .02 350);
+  --artists-card:  oklch(97% .01 350);
+  --artists-ink:   oklch(34% .16 264);
+  --artists-well:  oklch(18% .02 264);
+  --artists-well-foreground: oklch(96% .01 350);
 
   /* one glow color, three strengths — never three colors */
   --glow: var(--accent-shader);
@@ -114,7 +135,15 @@
   --color-info: var(--info);
   --color-ok: var(--ok);
   --color-alive: var(--alive);
+  --color-void: var(--void);
+  --color-void-foreground: var(--void-foreground);
   --color-glow: var(--glow);
+  --color-artists-paper: var(--artists-paper);
+  --color-artists-shade: var(--artists-shade);
+  --color-artists-card: var(--artists-card);
+  --color-artists-ink: var(--artists-ink);
+  --color-artists-well: var(--artists-well);
+  --color-artists-well-foreground: var(--artists-well-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -147,6 +176,9 @@
    Priority when several want to fire: system event > user interaction > idle random. */
 :root {
   --glitch-budget: 1;
+  /* the hard ceiling: a subtree may raise its budget (Ambient `glitch`, hostile
+     mode) but no keyframe ever moves further than --glitch-ceiling × 1px. */
+  --glitch-ceiling: 4;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -155,10 +187,34 @@
   }
 }
 
+/* The effective amplitude, resolved per element so a subtree's own
+   --glitch-budget wins over :root. Every keyframe below reads --glitch-k, never
+   the raw budget. */
+.debris-bit,
+.glitch-ghost {
+  --glitch-k: clamp(0, var(--glitch-budget, 1), var(--glitch-ceiling, 4));
+}
+
+/* reduced motion beats any inline budget a subtree sets for itself */
+@media (prefers-reduced-motion: reduce) {
+  .debris-bit,
+  .glitch-ghost {
+    --glitch-k: 0;
+  }
+}
+
 /* mandrock0 chaos layer — content lives in ::before so it never reaches the
    a11y tree, the copy buffer, or in-page search. */
-.debris-bit::before {
+.debris-bit::before,
+.glitch-ghost::before {
   content: var(--debris-content);
+}
+
+/* mandrock0 ambient layer — the one bit of paint that has to move on its own.
+   Runs on the `sweep` layer only, which `mode="hostile"` is alone in enabling. */
+@keyframes ambient-sweep {
+  0%   { transform: translateY(-14vh); }
+  100% { transform: translateY(114vh); }
 }
 
 @keyframes debris-pulse {
@@ -166,20 +222,145 @@
   50% { opacity: .8; }
 }
 
+/* Glitch kinds. Each one moves at most --glitch-k px (≤ --glitch-ceiling), and
+   they only ever run on decoration — debris bits and the aria-hidden ghost of
+   GlitchText. The real text node is never transformed, clipped or recoloured,
+   which is what keeps a glitching label readable. */
 @keyframes debris-glitch {
   0%, 100% { transform: translate(0, 0); opacity: .3; }
-  20% { transform: translate(calc(var(--glitch-budget) * 1px), 0); opacity: .7; }
-  40% { transform: translate(calc(var(--glitch-budget) * -1px), 0); opacity: .3; }
-  60% { transform: translate(0, calc(var(--glitch-budget) * 1px)); opacity: .6; }
+  20% { transform: translate(calc(var(--glitch-k) * 1px), 0); opacity: .7; }
+  40% { transform: translate(calc(var(--glitch-k) * -1px), 0); opacity: .3; }
+  60% { transform: translate(0, calc(var(--glitch-k) * 1px)); opacity: .6; }
+}
+
+@keyframes glitch-slice {
+  0%, 100% { clip-path: inset(0 0 0 0); translate: 0 0; }
+  20% { clip-path: inset(10% 0 60% 0); translate: calc(var(--glitch-k) * 1.5px) 0; }
+  45% { clip-path: inset(55% 0 15% 0); translate: calc(var(--glitch-k) * -1.5px) 0; }
+  70% { clip-path: inset(35% 0 40% 0); translate: calc(var(--glitch-k) * 1px) 0; }
+}
+
+@keyframes glitch-split {
+  0%, 100% { text-shadow: none; }
+  25%, 60% {
+    text-shadow:
+      calc(var(--glitch-k) * 1px) 0 var(--info),
+      calc(var(--glitch-k) * -1px) 0 var(--alive);
+  }
+}
+
+@keyframes glitch-flicker {
+  0%, 100% { opacity: .3; }
+  15% { opacity: .9; }
+  30% { opacity: 0; }
+  45% { opacity: .8; }
+  60% { opacity: .1; }
+}
+
+@keyframes glitch-skew {
+  0%, 100% { transform: skewX(0); }
+  30% { transform: skewX(calc(var(--glitch-k) * 3deg)); }
+  60% { transform: skewX(calc(var(--glitch-k) * -2deg)); }
+}
+
+@keyframes glitch-drop {
+  0%, 100% { translate: 0 0; opacity: .3; }
+  40% { translate: 0 calc(var(--glitch-k) * 1.5px); opacity: .8; }
+  41% { translate: 0 calc(var(--glitch-k) * -1px); }
+}
+
+/* Idle: quiet for ~95% of a long period, so an idle glitch is a blink, not a
+   strobe. Phase comes from the seed via --glitch-delay. */
+@keyframes glitch-idle {
+  0%, 95%, 100% { opacity: .3; translate: 0 0; }
+  96% { opacity: .9; translate: calc(var(--glitch-k) * 1px) 0; }
+  97% { opacity: 0; }
+  98% { opacity: .7; translate: calc(var(--glitch-k) * -1px) 0; }
+}
+
+/* The ghost of a GlitchText — an aria-hidden copy behind the real glyphs. */
+@keyframes glitch-ghost {
+  0%, 100% { opacity: 0; translate: 0 0; clip-path: inset(0 0 100% 0); }
+  15% { opacity: .35; translate: calc(var(--glitch-k) * 1px) 0; clip-path: inset(15% 0 55% 0); }
+  35% { opacity: .3; translate: calc(var(--glitch-k) * -1px) 0; clip-path: inset(60% 0 10% 0); }
+  55% { opacity: 0; }
+}
+
+/* Looping ghost for alive/idle: same frames, squeezed into the tail of the
+   period so the text spends most of its life clean. */
+@keyframes glitch-ghost-loop {
+  0%, 84%, 100% { opacity: 0; clip-path: inset(0 0 100% 0); }
+  87% { opacity: .35; translate: calc(var(--glitch-k) * 1px) 0; clip-path: inset(15% 0 55% 0); }
+  91% { opacity: .3; translate: calc(var(--glitch-k) * -1px) 0; clip-path: inset(60% 0 10% 0); }
+  94% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .debris-bit[data-alive="true"] {
     animation: debris-pulse 2.4s ease-in-out infinite;
   }
-  .debris-bit[data-glitch="true"]:hover,
-  .debris-bit[data-glitch="true"][data-alive="true"] {
-    animation: debris-glitch 240ms steps(2) 1;
+
+  /* Priority, highest first: system event (alive) > user interaction (hover on
+     the host) > idle. Debris is pointer-events-none, so the hover has to be
+     read off the host the debris sits in. */
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch],
+  .debris-bit[data-glitch][data-alive="true"] {
+    animation-duration: 240ms;
+    animation-timing-function: steps(2);
+    animation-iteration-count: 1;
+  }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="shift"],
+  .debris-bit[data-glitch="shift"][data-alive="true"] { animation-name: debris-glitch; }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="slice"],
+  .debris-bit[data-glitch="slice"][data-alive="true"] { animation-name: glitch-slice; }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="split"],
+  .debris-bit[data-glitch="split"][data-alive="true"] { animation-name: glitch-split; }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="flicker"],
+  .debris-bit[data-glitch="flicker"][data-alive="true"] { animation-name: glitch-flicker; }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="skew"],
+  .debris-bit[data-glitch="skew"][data-alive="true"] { animation-name: glitch-skew; }
+  *:hover > [data-slot="debris"] > .debris-bit[data-glitch="drop"],
+  .debris-bit[data-glitch="drop"][data-alive="true"] { animation-name: glitch-drop; }
+
+  /* idle: only bits that opted in, and only while nothing higher-priority runs */
+  [data-slot="debris"][data-idle="true"] > .debris-bit[data-glitch]:not([data-alive="true"]) {
+    animation: glitch-idle 9s linear var(--glitch-delay, 0s) infinite;
+  }
+
+  .glitch-ghost {
+    animation: glitch-ghost 320ms steps(3) 1;
+  }
+  [data-slot="glitch-text"][data-trigger="hover"]:not(:hover) > .glitch-ghost {
+    animation: none;
+  }
+  [data-slot="glitch-text"][data-trigger="idle"] > .glitch-ghost {
+    animation: glitch-ghost-loop 8s linear var(--glitch-delay, 0s) infinite;
+  }
+  [data-slot="glitch-text"][data-trigger="alive"] > .glitch-ghost {
+    animation: glitch-ghost-loop 2.4s linear var(--glitch-delay, 0s) infinite;
+  }
+}
+
+/* Pointless interactives — the springy bits they share. */
+@keyframes pointless-wobble {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -4deg; }
+  50% { rotate: 3deg; }
+  75% { rotate: -1.5deg; }
+}
+
+@keyframes pointless-pop {
+  0% { scale: 1; }
+  40% { scale: .6; }
+  100% { scale: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-pointless][data-wobble="true"] {
+    animation: pointless-wobble 360ms ease-out 1;
+  }
+  [data-slot="bubble-wrap-cell"][data-popped="true"] {
+    animation: pointless-pop 220ms ease-out 1;
   }
 }
 

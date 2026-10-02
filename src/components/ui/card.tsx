@@ -7,13 +7,20 @@ function Card({
   className,
   size = "default",
   debris = false,
+  alive = false,
   id,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm"; debris?: boolean }) {
+}: React.ComponentProps<"div"> & {
+  size?: "default" | "sm"
+  debris?: boolean
+  /** A real process is running behind this card — the sole trigger for pulse/glitch. */
+  alive?: boolean
+}) {
   return (
     <div
       data-slot="card"
       data-size={size}
+      data-alive={alive || undefined}
       id={id}
       className={cn(
         "group/card relative flex flex-col gap-(--card-spacing) overflow-hidden rounded-card border border-border bg-card py-(--card-spacing) text-sm text-card-foreground shadow-glow-ambient [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-card *:[img:last-child]:rounded-b-card",
@@ -22,7 +29,7 @@ function Card({
       {...props}
     >
       {props.children}
-      {debris && <Debris seed={id ?? size} name="card" />}
+      {debris && <Debris seed={id ?? size} name="card" alive={alive} />}
     </div>
   )
 }

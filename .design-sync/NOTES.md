@@ -115,3 +115,62 @@ What can silently go stale — check these first on the next sync.
 - **This sync used no fan-out subagents** (the user's global config forbids the Agent tool unless
   asked), so `.design-sync/learnings/` was never created. A future run that does fan out must fold
   learnings before the driver will pass.
+
+## mandrock.me layout import (2026-08-25)
+
+The `mandrock.me` Claude Design export (`dc.html` + tailwind bundle) was folded back into the
+library: the palette was re-tuned to the layout's values and three of its structures were
+extracted as components. What a future sync needs to know:
+
+- **The palette moved off the plum hues onto crimson/magenta.** `--accent-purple`, `--accent-lime`,
+  `--background`, `--foreground`, `--card`, `--popover`, `--secondary`, `--muted`,
+  `--muted-foreground`, `--border` and `--input` all changed value in `src/index.css`.
+  `--accent-cyan`, `--accent-crimson` and `--destructive` did not. Every screenshot and captured
+  card from before this date grades against the old palette — a diff against them is expected,
+  not a regression.
+- **`button.stories.tsx` / `CssCheck` asserts the resolved `--primary` literally**
+  (`oklch(0.7 0.3 320)`). It is the only test in the repo that hardcodes a token *value*, so it
+  fails the moment `--accent-purple` is retuned again. That is deliberate — it is the tripwire
+  proving the theme actually loaded — but it must be updated in the same commit as the token.
+  Note the assertion uses the browser's serialized form (`0.7 0.3`), not the authored `70% .30`.
+- **Two components were added: `Ambient` and `ArtistSlot`.** Both went through
+  `.design-sync/gen-entry.sh` and both carry `cardMode: "column"` overrides in `config.json`.
+- **`ArtistsPanel` deliberately inverts the palette to print** — `--artists-paper` / `--artists-ink`
+  and friends in `src/index.css`, registered in `@theme inline` so `bg-artists-paper` and the
+  `border-artists-ink/30` opacity modifiers compile. It is the one light surface in a dark-only
+  system, and it is scoped to the panel. Do not "fix" it toward the dark tokens.
+- **`Ambient` layers are `position: fixed` by default**, which escapes any preview cell. The
+  stories all pass `anchor="absolute"` so they stay inside their frame; `cardMode: "column"` is
+  enough and `single` is not needed. If a future story forgets `anchor`, its card will paint over
+  the whole preview page.
+- **`Ambient` sits at 6 stories and `ArtistSlot` at 7 — the cap.** `calm` and `hostile` were
+  deliberately folded into the single `Modes` story rather than given their own, to stay under
+  `--max-stories 7`. Adding one more story to either needs the flag raised in the same change.
+
+## void / glitch / pointless layer (2026-10-02)
+
+- **Palette:** `dff90b8`'s crimson palette (`oklch(11% .105 14)` background, purple `70% .30 320`) was
+  superseded by `d1a5318` on master — production mandrock.me ships master's values. Master wins;
+  `Ambient`, `ArtistSlot`, `--artists-*` and Card `alive` from `dff90b8` are kept. `CssCheck` in
+  `button.stories.tsx` asserts `oklch(0.62 0.27 300)` again.
+- **New tokens/utilities:** `--void` (`bg-void` `text-void` `text-void-foreground` `border-void`),
+  `--glitch-ceiling`, per-element `--glitch-k` (the clamped budget every keyframe reads).
+- **New components (9):** `Plate`, `GlitchText`, `DudButton`, `FidgetSwitch`, `PointlessSlider`,
+  `FidgetDial`, `BubbleWrap`, `PointlessScatter`, `AmbientToys` (71 `ui` components total). `Debris`
+  got `glitch` / `idle` props and its own story file. Button and Badge gained `void` / `invert`
+  variants, Separator `variant="void"`, Ambient `toys` / `seed`. All prop their role colour as
+  `tone`, not `role` (ARIA collision).
+- **`--max-stories` must be 8**: Button is now at 8 (Default, CssCheck, Variants, Sizes, Disabled,
+  WithIcon, Void, WithDebris). Ambient is at 7 (the old cap) after the `Toys` story.
+- **Ambient `default` mode now paints the dot lattice** (`TOYS_BY_MODE`), so every earlier Ambient
+  grade differs from today's render — expected, not a regression.
+- **New `play()` stories → the reference shows post-interaction state:** `DudButton/Pressed`,
+  `FidgetSwitch/Flipped`, `BubbleWrap/Popped`, `GlitchText/ReadabilityCheck`, `Button/Void`. Same
+  rule as the nine older ones: the compiled preview is the correct initial render.
+- **Pointer toys are canvas/pointer driven** (`AmbientToys`, `FidgetDial`, `PointlessSlider`,
+  `FidgetSwitch`) — static captures only show the resting state. Their `anchor="absolute"` stories
+  keep the canvas inside the card; a forgotten `anchor` paints over the whole preview page.
+- **Hover glitch fix:** debris bits are `pointer-events-none`, so `.debris-bit:hover` never matched.
+  The trigger is now `*:hover > [data-slot="debris"] > .debris-bit` — the host's hover.
+- **Rebuild the reference before syncing** (`npx storybook build -o .design-sync/sb-reference`): the
+  compiled CSS is scraped from it, and `border-void` / `text-void` only exist because stories use them.

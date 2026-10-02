@@ -58,6 +58,21 @@
     },
     "ChartContainer": {
       "cardMode": "single"
+    },
+    "Ambient": {
+      "cardMode": "column"
+    },
+    "ArtistSlot": {
+      "cardMode": "column"
+    },
+    "PointlessScatter": {
+      "cardMode": "column"
+    },
+    "AmbientToys": {
+      "cardMode": "column"
+    },
+    "Debris": {
+      "cardMode": "column"
     }
   },
   "readmeHeader": ".design-sync/conventions.md"

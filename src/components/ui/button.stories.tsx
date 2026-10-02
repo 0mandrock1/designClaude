@@ -10,7 +10,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link'],
+      options: ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link', 'void', 'invert'],
     },
     size: {
       control: 'select',
@@ -95,6 +95,32 @@ export const WithIcon: Story = {
       Відправити мейл
     </Button>
   ),
+}
+
+/**
+ * The two true-black accents. `void` is a hole in the page — the border is what
+ * separates it, since void vs the near-black background is ~1.05:1. `invert`
+ * flips to a paper face with void ink (18:1).
+ */
+export const Void: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button variant="void">Войд</Button>
+      <Button variant="void" debris>
+        Войд з осадом
+      </Button>
+      <Button variant="invert">Інверт</Button>
+      <Button variant="invert" size="sm">
+        Інверт sm
+      </Button>
+    </div>
+  ),
+  play: async ({ canvas }) => {
+    const btn = canvas.getByRole('button', { name: /^войд$/i })
+    await expect(getComputedStyle(btn).backgroundColor).toBe('oklch(0 0 0)')
+    const inv = canvas.getByRole('button', { name: /^інверт$/i })
+    await expect(getComputedStyle(inv).color).toBe('oklch(0 0 0)')
+  },
 }
 
 export const WithDebris: Story = {
