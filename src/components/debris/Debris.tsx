@@ -1,5 +1,6 @@
 import * as React from "react"
 
+import { cssString, hash } from "@/lib/seed"
 import { cn } from "@/lib/utils"
 
 /**
@@ -37,14 +38,13 @@ const ABSURD_WORDS = [
   "це ще не баг",
 ]
 
-function hash(input: string): number {
-  let h = 2166136261
-  for (let i = 0; i < input.length; i++) {
-    h ^= input.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return h >>> 0
-}
+/**
+ * Glitch kinds, keyframes in `index.css`. All of them run on the debris bit
+ * only — decoration — and move at most `--glitch-ceiling` px.
+ */
+const GLITCH_KINDS = ["shift", "slice", "split", "flicker", "skew", "drop"] as const
+
+type GlitchKind = (typeof GLITCH_KINDS)[number]
 
 function pick<T>(pool: readonly T[], n: number): T {
   return pool[n % pool.length]
@@ -55,10 +55,17 @@ type Bit = {
   top: string
   left: string
   rot: number
-  glitch: boolean
+  glitch: GlitchKind | null
+  /** Idle phase, so a row of idle bits never blinks in unison. */
+  delay: string
 }
 
-function buildBits(seed: string, name: string, count: number): Bit[] {
+function buildBits(
+  seed: string,
+  name: string,
+  count: number,
+  kinds: readonly GlitchKind[]
+): Bit[] {
   const bits: Bit[] = []
   for (let i = 0; i < count; i++) {
     const n = hash(`${seed}:${name}:${i}`)
@@ -78,7 +85,12 @@ function buildBits(seed: string, name: string, count: number): Bit[] {
       top: `${8 + (n % 80)}%`,
       left: `${5 + ((n >>> 2) % 85)}%`,
       rot: (n % 13) - 6,
-      glitch: n % 6 === 0,
+      // one bit in three may glitch — the rest stay still so the glitching ones read
+      glitch:
+        kinds.length > 0 && (n >>> 11) % 3 === 0
+          ? pick(kinds, n >>> 13)
+          : null,
+      delay: `${((n >>> 4) % 90) / 10}s`,
     })
   }
   return bits
@@ -93,19 +105,45 @@ export interface DebrisProps {
   count?: number
   /** A real process is running right now — the sole trigger for pulse/glitch. */
   alive?: boolean
+  /**
+   * Which glitch kinds the bits may draw from. `"all"` (default) mixes every
+   * kind by seed; pass one kind or a list to narrow it; `"off"` keeps the bits still.
+   */
+  glitch?: "all" | "off" | GlitchKind | readonly GlitchKind[]
+  /**
+   * Lowest-priority trigger: glitching bits blink on a long seeded loop even with
+   * nothing hovered and nothing alive. Use it on at most one or two hosts per
+   * screen — see the glitch budget rule in the README.
+   */
+  idle?: boolean
   className?: string
 }
 
-function Debris({ seed, name = "debris", count = 3, alive = false, className }: DebrisProps) {
+function resolveKinds(glitch: DebrisProps["glitch"]): readonly GlitchKind[] {
+  if (glitch === undefined || glitch === "all") return GLITCH_KINDS
+  if (glitch === "off") return []
+  return typeof glitch === "string" ? [glitch] : glitch
+}
+
+function Debris({
+  seed,
+  name = "debris",
+  count = 3,
+  alive = false,
+  glitch,
+  idle = false,
+  className,
+}: DebrisProps) {
   const bits = React.useMemo(
-    () => buildBits(String(seed), name, count),
-    [seed, name, count]
+    () => buildBits(String(seed), name, count, resolveKinds(glitch)),
+    [seed, name, count, glitch]
   )
 
   return (
     <span
       aria-hidden="true"
       data-slot="debris"
+      data-idle={idle || undefined}
       data-alive={alive || undefined}
       className={cn(
         "pointer-events-none absolute inset-0 overflow-hidden",
@@ -115,15 +153,18 @@ function Debris({ seed, name = "debris", count = 3, alive = false, className }: 
       {bits.map((bit, i) => (
         <i
           key={i}
-          data-glitch={bit.glitch || undefined}
+          data-glitch={bit.glitch ?? undefined}
           data-alive={alive || undefined}
           className="debris-bit absolute font-mono text-[9px] leading-none whitespace-nowrap text-muted-foreground/35 not-italic select-none"
           style={
             {
               top: bit.top,
               left: bit.left,
-              transform: `rotate(${bit.rot}deg)`,
-              "--debris-content": `"${bit.content}"`,
+              // `rotate`, not `transform`, so the shift/skew keyframes (which
+              // animate `transform`) compose with the tilt instead of erasing it
+              rotate: `${bit.rot}deg`,
+              "--debris-content": cssString(bit.content),
+              "--glitch-delay": bit.delay,
             } as React.CSSProperties
           }
         />
@@ -132,4 +173,4 @@ function Debris({ seed, name = "debris", count = 3, alive = false, className }: 
   )
 }
 
-export { Debris }
+export { Debris, GLITCH_KINDS, type GlitchKind }

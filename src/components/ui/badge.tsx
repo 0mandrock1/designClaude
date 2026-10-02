@@ -23,6 +23,8 @@ const badgeVariants = cva(
         info: "bg-info/15 text-info [a]:hover:bg-info/25",
         ok: "bg-ok/15 text-ok [a]:hover:bg-ok/25",
         alive: "bg-alive/15 text-alive [a]:hover:bg-alive/25",
+        void: "border-border bg-void text-void-foreground [a]:hover:border-action/60",
+        invert: "bg-foreground text-void [a]:hover:bg-foreground/85",
       },
     },
     defaultVariants: {

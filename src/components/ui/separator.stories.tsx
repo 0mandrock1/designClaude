@@ -29,6 +29,27 @@ export const Default: Story = {
   ),
 }
 
+/**
+ * The heavy break: a void band between two hairlines. The hairlines are what
+ * read as the edge — void alone is ~1.05:1 against the page.
+ */
+export const Void: Story = {
+  render: () => (
+    <div className="w-80 rounded-card bg-card p-4">
+      <div className="text-sm font-medium">Свої імена</div>
+      <Separator variant="void" className="my-4" />
+      <div className="text-sm font-medium">Кого продюсую</div>
+      <div className="mt-4 flex h-8 items-center gap-4 text-sm">
+        <div>Блог</div>
+        <Separator variant="void" orientation="vertical" />
+        <div>Доки</div>
+        <Separator variant="void" orientation="vertical" debris />
+        <div>Сорси</div>
+      </div>
+    </div>
+  ),
+}
+
 export const WithDebris: Story = {
   name: 'Debris (chaos layer)',
   render: () => (

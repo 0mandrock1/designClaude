@@ -19,6 +19,11 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        // true-black surface: a hole in the page, framed so it reads as an edge
+        // (void vs background is only ~1.05:1 — the border does the separating)
+        void: "border-border bg-void text-void-foreground hover:border-action/60 hover:text-action hover:shadow-glow-attention aria-expanded:border-action/60",
+        // the inversion: paper-white face, void ink (18:1)
+        invert: "bg-foreground text-void hover:bg-foreground/85 hover:shadow-glow-interaction aria-expanded:bg-foreground/85",
       },
       size: {
         default:

@@ -73,7 +73,7 @@ export const Modes: Story = {
 export const GlitchBudget: Story = {
   render: () => (
     <div className="flex flex-wrap gap-4">
-      {[0, 1, 2].map((glitch) => (
+      {[0, 1, 2, 4].map((glitch) => (
         <Ambient
           key={glitch}
           mode="hostile"
@@ -87,6 +87,19 @@ export const GlitchBudget: Story = {
         </Ambient>
       ))}
     </div>
+  ),
+}
+
+/**
+ * The pointer toys riding on the ambient layer — the homepage's lattice, sparks,
+ * trail and reticle. Move over the box and press; the content stays clickable.
+ * This is Ambient's 7th story: the capture cap.
+ */
+export const Toys: Story = {
+  render: () => (
+    <Ambient anchor="absolute" mode="calm" toys seed="toys" className={frame}>
+      <Readout>toys · field · particles · trail · cursor</Readout>
+    </Ambient>
   ),
 }
 

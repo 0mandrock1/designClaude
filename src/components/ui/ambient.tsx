@@ -1,5 +1,10 @@
 import * as React from "react"
 
+import {
+  AMBIENT_TOYS,
+  AmbientToys,
+  type AmbientToyName,
+} from "@/components/ui/ambient-toys"
 import { cn } from "@/lib/utils"
 
 /**
@@ -39,6 +44,16 @@ const LAYERS_BY_MODE: Record<AmbientMode, readonly AmbientLayerName[]> = {
   calm: ["grid", "vignette"],
   default: ["grid", "noise", "vignette", "foci"],
   hostile: AMBIENT_LAYERS,
+}
+
+/**
+ * The pointer toys each rung gets by default. `calm` stays inert; `default`
+ * only lights the lattice under the pointer; `hostile` is the full homepage set.
+ */
+const TOYS_BY_MODE: Record<AmbientMode, readonly AmbientToyName[]> = {
+  calm: [],
+  default: ["field"],
+  hostile: AMBIENT_TOYS,
 }
 
 /** Layers gated by the `scanlines` switch — the ones that never stop moving. */
@@ -106,7 +121,9 @@ function AmbientLayer({
           style={{
             backgroundImage:
               "repeating-linear-gradient(to bottom, oklch(0% 0 0 / .28) 0 1px, transparent 1px 3px)",
-            opacity: "calc(.5 * var(--glitch-budget, 1))",
+            // budget scales glitch amplitude up to --glitch-ceiling, but the
+            // scanlines sit over text: they stop darkening at budget 1
+            opacity: "calc(.5 * min(var(--glitch-budget, 1), 1))",
             ...style,
           }}
           {...props}
@@ -122,7 +139,7 @@ function AmbientLayer({
             backgroundImage:
               "linear-gradient(to bottom, transparent, color-mix(in oklch, var(--accent-lime) 7%, transparent), transparent)",
             animation: "ambient-sweep 11s linear infinite",
-            opacity: "var(--glitch-budget, 1)",
+            opacity: "min(var(--glitch-budget, 1), 1)",
             ...style,
           }}
           {...props}
@@ -210,7 +227,10 @@ export interface AmbientProps extends React.ComponentProps<"div"> {
    * the mode decides.
    */
   scanlines?: boolean
-  /** Ceiling for every glitch in the subtree — 0 disables motion outright. */
+  /**
+   * Glitch budget for the subtree — scales every glitch amplitude, 0 disables
+   * motion outright. Clamped in CSS to `--glitch-ceiling` (4).
+   */
   glitch?: number
   /** Overrides `--accent-purple` for the subtree, so one page can retune the shader. */
   accent?: string
@@ -220,6 +240,13 @@ export interface AmbientProps extends React.ComponentProps<"div"> {
   anchor?: "fixed" | "absolute"
   /** Explicit layer set, bypassing the `mode` ladder entirely. */
   layers?: readonly AmbientLayerName[]
+  /**
+   * Pointer toys (see `AmbientToys`). Left undefined, the mode decides;
+   * `false` turns them off, `true` turns all of them on, or pass a list.
+   */
+  toys?: boolean | readonly AmbientToyName[]
+  /** Seed for the toys' lattice, colours and reticle — same seed, same room. */
+  seed?: string | number
 }
 
 function Ambient({
@@ -230,11 +257,22 @@ function Ambient({
   parallax,
   anchor = "fixed",
   layers,
+  toys,
+  seed = "ambient",
   className,
   style,
   children,
   ...props
 }: AmbientProps) {
+  const activeToys =
+    toys === undefined
+      ? TOYS_BY_MODE[mode]
+      : toys === true
+        ? AMBIENT_TOYS
+        : toys === false
+          ? []
+          : toys
+
   const active = React.useMemo(() => {
     const base = layers ?? LAYERS_BY_MODE[mode]
     if (scanlines === undefined) return base
@@ -265,6 +303,9 @@ function Ambient({
           parallax={name === "foci" ? parallax : undefined}
         />
       ))}
+      {activeToys.length > 0 && (
+        <AmbientToys toys={activeToys} seed={seed} anchor={anchor} />
+      )}
       {/* Content sits one step above every layer, and carries its own stacking
           context so a sticky header inside it can't be painted over by the grid. */}
       <div data-slot="ambient-content" className="relative z-1 h-full">
@@ -301,6 +342,7 @@ export {
   AmbientSlot,
   AMBIENT_LAYERS,
   LAYERS_BY_MODE,
+  TOYS_BY_MODE,
   type AmbientLayerName,
   type AmbientMode,
 }
