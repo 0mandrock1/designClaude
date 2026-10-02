@@ -57,6 +57,23 @@ export const OnCard: Story = {
   ),
 }
 
+/**
+ * Void as ink: on a paper (`bg-foreground`) surface the black rule is the
+ * strongest edge in the system (18:1) — the one place `border-void` stands alone.
+ */
+export const OnPaper: Story = {
+  render: () => (
+    <div className="grid w-96 gap-3 rounded-card bg-foreground p-4 text-void">
+      <div className="text-sm font-semibold">Свої імена</div>
+      <div className="border-t-2 border-void pt-3 text-sm">Кого продюсую</div>
+      <Plate tone="alive" className="border-void">
+        <PlateLabel>alive</PlateLabel>
+        <span>стрім іде</span>
+      </Plate>
+    </div>
+  ),
+}
+
 export const WithDebris: Story = {
   name: 'Debris (chaos layer)',
   render: () => (

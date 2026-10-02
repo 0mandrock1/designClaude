@@ -22,7 +22,7 @@ This is the one rule that will silently ruin output if ignored. `_ds_bundle.css`
 **compiled** stylesheet — it contains only the ~650 classes the library's own components and
 stories happened to use. A utility that was never used **does not exist**, and writing it produces
 no style and no error. Verified examples that are *absent*: `text-xl`, `text-2xl`, `space-y-4`,
-`grid-cols-3`, `text-action`, `text-accent-cyan`, `text-accent-lime`, `bg-chart-1`.
+`grid-cols-3`, `text-accent-cyan`, `text-accent-lime`, `bg-chart-1`.
 
 So:
 
@@ -44,6 +44,8 @@ Confirmed utility classes:
 | Surfaces | `bg-background` `bg-card` `bg-popover` `bg-muted` `bg-secondary` `bg-primary` `bg-accent` `bg-sidebar` |
 | Text | `text-foreground` `text-muted-foreground` `text-card-foreground` `text-primary-foreground` `text-destructive` `text-info` `text-ok` `text-alive` |
 | Role fills | `bg-action` `bg-info` `bg-ok` `bg-alive` |
+| Role text | `text-action` `text-info` `text-ok` `text-alive` |
+| Void (true black) | `bg-void` `text-void` `text-void-foreground` `border-void` |
 | Brand fills | `bg-accent-purple` `bg-accent-cyan` `bg-accent-lime` `bg-accent-crimson` |
 | Lines | `border-border` `ring-ring` `ring-card` `border-sidebar-border` |
 | Radius | `rounded-card` `rounded-control` `rounded-lg` `rounded-md` `rounded-full` |
@@ -53,7 +55,7 @@ Tokens (always available via `var()`, even where no utility was compiled):
 `--background --foreground --card --popover --primary --secondary --muted --muted-foreground
 --accent --destructive --border --input --ring --radius --radius-card --radius-control`,
 brand `--accent-purple --accent-cyan --accent-lime --accent-crimson --accent-shader`,
-roles `--action --info --ok --alive`, glow `--glow --glow-ambient --glow-attention
+roles `--action --info --ok --alive`, `--void` (true black), `--glitch-budget --glitch-ceiling`, glow `--glow --glow-ambient --glow-attention
 --glow-interaction`, plus `--sidebar-*` and `--chart-1..5`.
 
 **Glow discipline:** one colour, three strengths — ambient / attention / interaction. Never mix
@@ -67,11 +69,58 @@ neutral notice, `--ok` (lime) = success/complete, `--alive` (crimson) = live/irr
 never reaches the a11y tree or text selection. `--glitch-budget` caps animation and drops to `0`
 under `prefers-reduced-motion`.
 
+### System rules (mandatory on every page / screen)
+
+These are rules of the system, not suggestions. A screen that breaks them is off-brand.
+
+**1. At least 3 pointless interactives per screen.** Elements that react to hover / click / drag
+and do nothing: `DudButton`, `FidgetSwitch`, `PointlessSlider`, `FidgetDial`, `BubbleWrap`. The
+quickest way to meet the floor is one `PointlessScatter count={3}` in a dead gutter or empty
+corner. Never put one in the primary action path, never over real content. They carry `tone` =
+`action | info | ok | alive` (the four role colours) and `debris`. They are `aria-hidden` and out of
+the tab order on purpose — a control that announces itself and does nothing is a lie to a screen
+reader. (Prop is `tone`, not `role`: `role` is the ARIA attribute.)
+
+**2. Glitch budget per screen.** `--glitch-budget` is `1` by default and `0` under
+`prefers-reduced-motion` (the system forces this; nothing can override it). Raise it only on
+showcase/landing screens: `<Ambient mode="hostile" glitch={2}>`. `--glitch-ceiling` is `4` and hard —
+no glitch ever moves more than 4px. At most **2** `idle` hosts per screen; `alive` only for a
+real running process. `GlitchText` is for labels and headings of ~4 words, never body copy: it
+glitches a decorative ghost behind the text, the text itself never moves.
+
+**3. Where to use `--void`.** Inverted `Button`/`Badge` (`variant="void"` / `"invert"`), the heavy
+`Separator variant="void"`, `Plate` status strips, wells behind toys, and as black ink on a paper
+(`bg-foreground`) surface. Never as a page or card background. Void against `--background` is
+only ~1.04:1, so it never forms an edge on its own — frame it (`border-border` or a `tone`
+edge) or fill it with text. Every text token passes WCAG AA on void (foreground 18.6, muted 7.2,
+info 12.1, ok 15.0, action 4.9, alive 5.3).
+
+```jsx
+<Ambient mode="hostile" glitch={2} seed="deploys">           {/* showcase screen only */}
+  <Plate tone="alive" debris>
+    <PlateLabel>alive</PlateLabel>
+    <GlitchText trigger="alive">стрім іде</GlitchText>
+  </Plate>
+
+  <Card>…</Card>
+  <Separator variant="void" />
+  <Button variant="void">Деплой</Button>
+  <Button variant="invert">Підтвердити</Button>
+
+  {/* rule 1: the floor of three */}
+  <PointlessScatter seed="gutter" count={3} kinds={['dud', 'switch', 'dial']} />
+</Ambient>
+
+<DudButton tone="info">натисни</DudButton>
+<PointlessSlider tone="ok" seed="mood" />
+<Debris seed={7} name="job" count={4} glitch={['slice', 'split']} idle />
+```
+
 ### Where the truth is
 
 Read `_ds/<folder>/styles.css` and its `@import`s before styling — it is the authority on which
 classes exist. Per component, read `components/components/<Name>/<Name>.prompt.md` (usage) and
-`<Name>.d.ts` (props). All 60 components sit under the single `components` group.
+`<Name>.d.ts` (props). All 71 components sit under the single `components` group.
 
 ### Idiomatic example
 

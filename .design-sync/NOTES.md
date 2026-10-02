@@ -146,3 +146,31 @@ extracted as components. What a future sync needs to know:
 - **`Ambient` sits at 6 stories and `ArtistSlot` at 7 — the cap.** `calm` and `hostile` were
   deliberately folded into the single `Modes` story rather than given their own, to stay under
   `--max-stories 7`. Adding one more story to either needs the flag raised in the same change.
+
+## void / glitch / pointless layer (2026-10-02)
+
+- **Palette:** `dff90b8`'s crimson palette (`oklch(11% .105 14)` background, purple `70% .30 320`) was
+  superseded by `d1a5318` on master — production mandrock.me ships master's values. Master wins;
+  `Ambient`, `ArtistSlot`, `--artists-*` and Card `alive` from `dff90b8` are kept. `CssCheck` in
+  `button.stories.tsx` asserts `oklch(0.62 0.27 300)` again.
+- **New tokens/utilities:** `--void` (`bg-void` `text-void` `text-void-foreground` `border-void`),
+  `--glitch-ceiling`, per-element `--glitch-k` (the clamped budget every keyframe reads).
+- **New components (9):** `Plate`, `GlitchText`, `DudButton`, `FidgetSwitch`, `PointlessSlider`,
+  `FidgetDial`, `BubbleWrap`, `PointlessScatter`, `AmbientToys` (71 `ui` components total). `Debris`
+  got `glitch` / `idle` props and its own story file. Button and Badge gained `void` / `invert`
+  variants, Separator `variant="void"`, Ambient `toys` / `seed`. All prop their role colour as
+  `tone`, not `role` (ARIA collision).
+- **`--max-stories` must be 8**: Button is now at 8 (Default, CssCheck, Variants, Sizes, Disabled,
+  WithIcon, Void, WithDebris). Ambient is at 7 (the old cap) after the `Toys` story.
+- **Ambient `default` mode now paints the dot lattice** (`TOYS_BY_MODE`), so every earlier Ambient
+  grade differs from today's render — expected, not a regression.
+- **New `play()` stories → the reference shows post-interaction state:** `DudButton/Pressed`,
+  `FidgetSwitch/Flipped`, `BubbleWrap/Popped`, `GlitchText/ReadabilityCheck`, `Button/Void`. Same
+  rule as the nine older ones: the compiled preview is the correct initial render.
+- **Pointer toys are canvas/pointer driven** (`AmbientToys`, `FidgetDial`, `PointlessSlider`,
+  `FidgetSwitch`) — static captures only show the resting state. Their `anchor="absolute"` stories
+  keep the canvas inside the card; a forgotten `anchor` paints over the whole preview page.
+- **Hover glitch fix:** debris bits are `pointer-events-none`, so `.debris-bit:hover` never matched.
+  The trigger is now `*:hover > [data-slot="debris"] > .debris-bit` — the host's hover.
+- **Rebuild the reference before syncing** (`npx storybook build -o .design-sync/sb-reference`): the
+  compiled CSS is scraped from it, and `border-void` / `text-void` only exist because stories use them.
